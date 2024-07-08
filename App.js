@@ -1,55 +1,47 @@
 // App.js
 import 'react-native-gesture-handler';
-import React, {useState} from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator,DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon1 from 'react-native-vector-icons/Foundation';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import SplashScreens from './Screen/SplashScreen';
 import LoginScreen from './Screen/LogInScreen';
 import CustomHeader from './Navigation/CustomHeader';
-import CustomerDrawer from './Navigation/CustomDrawer';
-import HomeScreen from './Screen/HomeScreen';
 import CustomDrawerContent from './Navigation/CustomDrawerContent';
-import Header from './Navigation/Header_subscreen';
+import HomeScreen from './Screen/HomeScreen';
+import Header_subscreen from './Navigation/Header_subscreen';
 import SubScreen1 from './Resident Information and CM/RequestDocument';
 import SubScreen2 from './Resident Information and CM/ServiceRecord';
 import SubScreen3 from './Resident Information and CM/ResidentRegistrationandProfiling';
 import SubScreen4 from './Resident Information and CM/CensusData';
-import FMAS1 from './FMAS/AuditManagement'
-import FMAS2 from './FMAS/FinancialManagement'
-import FMAS3 from './FMAS/PayrollManagement'
-import FMAS4 from './FMAS/RevenueandExpenseTracking'
-import FMAS5 from './FMAS/BudgetPlanningandMonitoring'
-import IRCM1 from './Incident Report and CM/BlotterList'
-import IRCM2 from './Incident Report and CM/BlotterForm'
-import IRCM3 from './Incident Report and CM/CaseReport'
-import IRCM4 from './Incident Report and CM/SummonSchedule'
+import FMAS1 from './FMAS/AuditManagement';
+import FMAS2 from './FMAS/FinancialManagement';
+import FMAS3 from './FMAS/PayrollManagement';
+import FMAS4 from './FMAS/RevenueandExpenseTracking';
+import FMAS5 from './FMAS/BudgetPlanningandMonitoring';
+import IRCM1 from './Incident Report and CM/BlotterList';
+import IRCM2 from './Incident Report and CM/BlotterForm';
+import IRCM3 from './Incident Report and CM/CaseReport';
+import IRCM4 from './Incident Report and CM/SummonSchedule';
 import CDSM1 from './CDSM/Dashboard';
 import CDSM2 from './CDSM/ProgramPlanningandScheduling';
 import CDSM3 from './CDSM/Events';
 import CDSM4 from './CDSM/ResourceManagement';
 import CDSM5 from './CDSM/BeneficiaryManagement';
 import CDSM6 from './CDSM/Notification';
-import Header_subscreen from './Navigation/Header_subscreen';
-import RICMNavigator from './Navigation/RICMNavigator';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-
 const HomeStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="Service Record" 
-            component={SubScreen2} 
+            name="Home_Home" 
+            component={HomeScreen} 
             options={({ navigation }) => ({
-                header: ({ navigation }) => (
-                    <Header_subscreen navigation={navigation} />
-                ),
+                header: () => <Header_subscreen navigation={navigation} />,
                 headerLeft: () => (
                     <TouchableOpacity
                         style={{ marginLeft: 10 }}
@@ -63,84 +55,376 @@ const HomeStack = () => (
     </Stack.Navigator>
 );
 
-const RequestDocument = () => (
+const RequestDocumentStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name='Request Document' 
+            name="Home_RequestDocument" 
             component={SubScreen1} 
             options={({ navigation }) => ({
-            
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
             })}
         />
     </Stack.Navigator>
 );
 
-const CustomDrawerContent1 = ({ navigation }) => {
-    const [isSubmenu1Expanded, setIsSubmenu1Expanded] = useState(false);
-    const [isSubmenu2Expanded, setIsSubmenu2Expanded] = useState(false);
-  
-    return (
-      <View style={styles.drawerContent}>
-        <TouchableOpacity
-          style={styles.drawerItem}
-          onPress={() => setIsSubmenu1Expanded(!isSubmenu1Expanded)}
-        >
-          <Text  style={styles.drawerItemText} >Resident Information and CM</Text>
-          <Icon name={isSubmenu1Expanded ? 'up' : 'down'} size={24} color="white" />
-        </TouchableOpacity>
-        {isSubmenu1Expanded && (
-            <View style={styles.submenu}>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('Request')}>
-                <Text style={styles.drawerSubItemText}>Request Document</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('ServiceRecord')}>
-                <Text style={styles.drawerSubItemText}>Service Record</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('ResidentRegistrationandProfiling')}>
-                <Text style={styles.drawerSubItemText}>Resident Registration and Profiling</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('CensusData')}>
-                <Text style={styles.drawerSubItemText}>Census Data</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-<TouchableOpacity
-            style={styles.drawerItem}
-            onPress={() => setIsSubmenu2Expanded(!isSubmenu2Expanded)}
-          >
-            <Icon1 name={'torsos-all-female'} size={24} color="white" />
-            <Text style={styles.drawerItemText}>
-              Financial Management{'\n'}and Accounting System
-            </Text>
-            <Icon name={isSubmenu2Expanded ? 'up' : 'down'} size={24} color="white" />
-          </TouchableOpacity>
-          {isSubmenu2Expanded && (
-            <View style={styles.submenu}>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('BudgetPlanningandMonitoring')}>
-                <Text style={styles.drawerSubItemText}>Budget Planning and Monitoring</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('RevenueandExpenseTracking')}>
-                <Text style={styles.drawerSubItemText}>Revenue and Expense Tracking</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('PayrollManagement')}>
-                <Text style={styles.drawerSubItemText}>Payroll Management</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('FinancialManagement')}>
-                <Text style={styles.drawerSubItemText}>Financial Management</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.drawerSubItem} onPress={() => navigation.navigate('AuditManagement')}>
-                <Text style={styles.drawerSubItemText}>Audit Management</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-    );
-  };
+const RRPStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_ResidentRegistrationandProfiling" 
+            component={SubScreen3} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
 
-const DrawerNavigator = (props) => {
+const CensusDataStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_CensusData" 
+            component={SubScreen4} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const BPMStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_BudgetPlanningandMonitoring" 
+            component={FMAS5} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const RETStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_RevenueandExpenseTracking" 
+            component={FMAS4} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const PMStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_PayrollManagement" 
+            component={FMAS3} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const FMStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_FinancialManagement" 
+            component={FMAS2} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const AuditStack1 = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_AuditManagement" 
+            component={FMAS1} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const BFStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="BlotterForm" 
+            component={IRCM2} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const BLStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="BlotterList" 
+            component={IRCM1} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const CSStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="CaseReport" 
+            component={IRCM3} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const SSCStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="SummonSchedule" 
+            component={IRCM4} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
+const DBStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Dashboard" 
+            component={CDSM1} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
+const PPSStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="ProgramPlanningandSchedulin" 
+            component={CDSM2} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
+const EventStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Events" 
+            component={CDSM3} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
+const RMStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="ResourceManagement" 
+            component={CDSM4} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
+const BMStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="BeneficiaryManagement" 
+            component={CDSM5} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
+const NotifStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Notification" 
+            component={CDSM6} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+function DrawerNavigator() {
     return (
-        <Drawer.Navigator initialRouteName='Home'
-             drawerContent={props => <CustomDrawerContent1 {...props} />}
+        <Drawer.Navigator
+            drawerContent={props => <CustomDrawerContent {...props} />}
             screenOptions={{
                 headerShown: false,
                 drawerActiveBackgroundColor: '#ffffff',
@@ -158,15 +442,15 @@ const DrawerNavigator = (props) => {
         >
             <Drawer.Screen
                 name="Home"
-                component={HomeScreen}
+                component={HomeStack}
                 options={({ navigation }) => ({
                     header: () => <Header_subscreen navigation={navigation} />,
                     // No drawerLabel option means the label will not be shown
                 })}
             />
             <Drawer.Screen
-                name="Request"
-                component={RequestDocument}
+                name="RequestDocument"
+                component={RequestDocumentStack}
                 options={{
                     headerShown: false,
                     // No drawerLabel option means the label will not be shown
@@ -180,6 +464,142 @@ const DrawerNavigator = (props) => {
                     // No drawerLabel option means the label will not be shown
                 }}
             />
+            <Drawer.Screen
+                name="ResidentRegistrationandProfiling"
+                component={RRPStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="CensusData"
+                component={CensusDataStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="BudgetPlanningandMonitoring"
+                component={BPMStack}
+                options={({ navigation }) => ({
+                    header: () => <Header_subscreen navigation={navigation} />,
+                    // No drawerLabel option means the label will not be shown
+                })}
+            />
+            <Drawer.Screen
+                name="RevenueandExpenseTracking"
+                component={RETStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="PayrollManagement"
+                component={PMStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="FinancialManagement"
+                component={FMStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="AuditsManagement"
+                component={AuditStack1}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                <Drawer.Screen
+                name="BlotterForm"
+                component={BFStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="BlotterList"
+                component={BLStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="CaseReport"
+                component={CSStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="SummonSchedule"
+                component={SSCStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                <Drawer.Screen
+                name="Dashboard"
+                component={DBStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="ProgramPlanningandSchedulin"
+                component={PPSStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                <Drawer.Screen
+                name="Events"
+                component={EventStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="ResourceManagement"
+                component={RMStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="BeneficiaryManagement"
+                component={BMStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="Notification"
+                component={NotifStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
         </Drawer.Navigator>
     );
 }
@@ -187,7 +607,6 @@ const DrawerNavigator = (props) => {
 export default function App() {
     return (
         <NavigationContainer>
-         
             <Stack.Navigator initialRouteName="Splash">
                 <Stack.Screen
                     name="Splash"
@@ -210,132 +629,6 @@ export default function App() {
                         headerShown: false
                     }}
                 />
-                     <Stack.Screen
-                    name="ServiceRecord"
-                    component={DrawerNavigator}
-                    options={{
-                        headerShown: false
-                    }}
-                />
-                <Stack.Screen
-                    name="ResidentRegistrationandProfiling"
-                    component={SubScreen3}
-                    options={{
-                        header: () => <Header title={'Resident Registration and Profiling'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="CensusData"
-                    component={SubScreen4}
-                    options={{
-                        header: () => <Header title={'Census Data'} />
-                    }}
-                />
-                          <Stack.Screen
-                    name="AuditManagement"
-                    component={FMAS1}
-                    options={{
-                      header: () => <Header title={'Audit Management'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="FinancialManagement"
-                    component={FMAS2}
-                    options={{
-                        header: () => <Header title={'Financial Management'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="PayrollManagement"
-                    component={FMAS3}
-                    options={{
-                        header: () => <Header title={'Payroll Management'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="RevenueandExpenseTracking"
-                    component={FMAS4}
-                    options={{
-                        header: () => <Header title={'Revenueand ExpenseTracking'} />
-                    }}
-                />
-                 <Stack.Screen
-                    name="BudgetPlanningandMonitoring"
-                    component={FMAS5}
-                    options={{
-                        header: () => <Header title={'Budget Planning and Monitoring'} />
-                    }}
-                />
-                      <Stack.Screen
-                    name="BlotterForm"
-                    component={IRCM1}
-                    options={{
-                        header: () => <Header title={'Financial Management'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="BlotterList"
-                    component={IRCM2}
-                    options={{
-                        header: () => <Header title={'Payroll Management'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="CaseReport"
-                    component={IRCM3}
-                    options={{
-                        header: () => <Header title={'Revenueand ExpenseTracking'} />
-                    }}
-                />
-                 <Stack.Screen
-                    name="SummonSchedule"
-                    component={IRCM4}
-                    options={{
-                        header: () => <Header title={'Budget Planning and Monitoring'} />
-                    }}
-                    />
-                    <Stack.Screen
-                        name="Dashboard"
-                        component={CDSM1}
-                        options={{
-                            header: () => <Header title={'Dashboard'} />
-                        }}
-                    />
-                     <Stack.Screen
-                        name="ProgramPlanningandSchedulin"
-                        component={CDSM2}
-                        options={{
-                            header: () => <Header title={'Program Planning and Schedulin'} />
-                        }}
-                    />
-                          <Stack.Screen
-                        name="Events"
-                        component={CDSM3}
-                        options={{
-                            header: () => <Header title={'Events'} />
-                        }}
-                    />
-                    <Stack.Screen
-                        name="ResourceManagement"
-                        component={CDSM4}
-                        options={{
-                            header: () => <Header title={'Resource Management'} />
-                        }}
-                    />
-                    <Stack.Screen
-                        name="BeneficiaryManagement"
-                        component={CDSM5}
-                        options={{
-                            header: () => <Header title={'Beneficiary Management'} />
-                        }}
-                    />
-                     <Stack.Screen
-                        name="Notification"
-                        component={CDSM6}
-                        options={{
-                            header: () => <Header title={'Budget Planning and Monitoring'} />
-                        }}
-                    />
             </Stack.Navigator>
         </NavigationContainer>
     );
@@ -385,6 +678,9 @@ const styles = StyleSheet.create({
       submenu: {
         paddingLeft: 20,
       },
-
+      drawerSubItemText: {
+        fontSize: 16,
+        color: 'white',
+      },
 
 });
