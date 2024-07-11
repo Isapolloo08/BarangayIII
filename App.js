@@ -22,7 +22,7 @@ import FMAS3 from './FMAS/PayrollManagement';
 import FMAS4 from './FMAS/RevenueandExpenseTracking';
 import FMAS5 from './FMAS/BudgetPlanningandMonitoring';
 import IRCM1 from './Incident Report and CM/BlotterList';
-import IRCM2 from './Incident Report and CM/BlotterForm';
+import IRCM2 from './Incident Report and CM/BlotterFrom'
 import IRCM3 from './Incident Report and CM/CaseReport';
 import IRCM4 from './Incident Report and CM/SummonSchedule';
 import CDSM1 from './CDSM/Dashboard';
@@ -74,6 +74,27 @@ const RequestDocumentStack = () => (
         />
     </Stack.Navigator>
 );
+
+const ServiceRecord = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_ServiceRecord" 
+            component={SubScreen2} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
 
 const RRPStack = () => (
     <Stack.Navigator>
@@ -218,16 +239,21 @@ const AuditStack1 = () => (
 const BFStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="BlotterForm" 
+            name="BLOTTER FORM" 
             component={IRCM2} 
             options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
                 headerLeft: () => (
                     <TouchableOpacity
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: -8,
+                         }}
                         onPress={() => navigation.toggleDrawer()}
                     >
-                        <Ionicons name="menu" size={30} color="#000" />
+                        <Ionicons name="menu" size={40} color="white" />
                     </TouchableOpacity>
                 ),
             })}
@@ -238,17 +264,22 @@ const BFStack = () => (
 const BLStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="BlotterList" 
+            name="BLOTTER LIST" 
             component={IRCM1} 
             options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
                 headerLeft: () => (
                     <TouchableOpacity
-                        style={{ marginLeft: 10 }}
-                        onPress={() => navigation.toggleDrawer()}
-                    >
-                        <Ionicons name="menu" size={30} color="#000" />
-                    </TouchableOpacity>
+                    style={{ marginLeft: -8,
+                     }}
+                    onPress={() => navigation.toggleDrawer()}
+                >
+                    <Ionicons name="menu" size={40} color="white" />
+                </TouchableOpacity>
                 ),
             })}
         />
@@ -258,16 +289,21 @@ const BLStack = () => (
 const CSStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="CaseReport" 
+            name="CASE REPORT" 
             component={IRCM3} 
             options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
                 headerLeft: () => (
                     <TouchableOpacity
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: -8,
+                         }}
                         onPress={() => navigation.toggleDrawer()}
                     >
-                        <Ionicons name="menu" size={30} color="#000" />
+                        <Ionicons name="menu" size={40} color="white" />
                     </TouchableOpacity>
                 ),
             })}
@@ -278,17 +314,22 @@ const CSStack = () => (
 const SSCStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="SummonSchedule" 
+            name="SUMMON SCHEDULE" 
             component={IRCM4} 
             options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
                 headerLeft: () => (
                     <TouchableOpacity
-                        style={{ marginLeft: 10 }}
-                        onPress={() => navigation.toggleDrawer()}
-                    >
-                        <Ionicons name="menu" size={30} color="#000" />
-                    </TouchableOpacity>
+                    style={{ marginLeft: -8,
+                     }}
+                    onPress={() => navigation.toggleDrawer()}
+                >
+                    <Ionicons name="menu" size={40} color="white" />
+                </TouchableOpacity>
                 ),
             })}
         />
@@ -458,7 +499,7 @@ function DrawerNavigator() {
             />
             <Drawer.Screen
                 name="ServiceRecord"
-                component={HomeStack}
+                component={ServiceRecord}
                 options={{
                     headerShown: false,
                     // No drawerLabel option means the label will not be shown
