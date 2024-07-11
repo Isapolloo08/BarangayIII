@@ -1,4 +1,4 @@
-// app/budget.jsx
+// Budget Planning and Monitoring
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
