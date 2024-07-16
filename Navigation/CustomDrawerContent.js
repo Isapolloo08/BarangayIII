@@ -73,14 +73,26 @@ const CustomDrawerContent = (props) => {
               <TouchableOpacity onPress={() => props.navigation.navigate('RequestDocument')} style={styles.drawerSubItem}>
                 <Text style={styles.drawerSubItemText}>Request Document</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ServiceRecord')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Service Record</Text>
-              </TouchableOpacity>
               <TouchableOpacity onPress={() => props.navigation.navigate('ResidentRegistrationandProfiling')} style={styles.drawerSubItem}>
                 <Text style={styles.drawerSubItemText}>Resident Registration and Profiling</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => props.navigation.navigate('CensusData')} style={styles.drawerSubItem}>
                 <Text style={styles.drawerSubItemText}>Census Data</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentDocumentRequest')} style={styles.drawerSubItem}>
+                <Text style={styles.drawerSubItemText}>Resident Documents Request</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentRecords')} style={styles.drawerSubItem}>
+                <Text style={styles.drawerSubItemText}>Resident Records</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentAccountRequest')} style={styles.drawerSubItem}>
+                <Text style={styles.drawerSubItemText}>Resident Account Request</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.navigation.navigate('Reports')} style={styles.drawerSubItem}>
+                <Text style={styles.drawerSubItemText}>Reports</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => props.navigation.navigate('ServiceRecord')} style={styles.drawerSubItem}>
+                <Text style={styles.drawerSubItemText}>Service Record</Text>
               </TouchableOpacity>
             </View>
           )}

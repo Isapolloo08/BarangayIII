@@ -23,6 +23,10 @@ const LoginScreen = ({ navigation }) => {
         setShowPassword(!showPassword);
     };
 
+    const handleRegisterScreen = () => {
+        navigation.navigate('Register'); // Navigate to Add Resident Register
+    };
+
     return (
         <View style={styles.container}>
             <Image
@@ -54,7 +58,9 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.bottomTextContainer}>
                 <Text style={styles.bottomText}>Forgot Password?</Text>
-                <Text style={styles.bottomText}>Register</Text>
+                <TouchableOpacity onPress={handleRegisterScreen}>
+                    <Text style={styles.bottomText}>Register</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
