@@ -27,13 +27,126 @@ import IRCM3 from './Incident Report and CM/CaseReport';
 import IRCM4 from './Incident Report and CM/SummonSchedule';
 import CDSM1 from './CDSM/Dashboard';
 import CDSM2 from './CDSM/ProgramPlanningandScheduling';
-import CDSM3 from './CDSM/Events';
+import CDSM3 from './CDSM/Resident/ProgramSchedule';
 import CDSM4 from './CDSM/ResourceManagement';
-import CDSM5 from './CDSM/BeneficiaryManagement';
+import CDSM5 from './CDSM/SecretaryBeneficiaryManagement/BeneficiaryRequests';
 import CDSM6 from './CDSM/Notification';
+import FMASSUB1 from './FMAS/BudgetDashboard';
+import FMASSUB2 from './FMAS/AddBudget';
+import FMASSUB3 from './FMAS/EditBudget';
+import FMASSUB4 from './FMAS/BudgetReport';
+import FMASSUB5 from './FMAS/RET_TransactionDashboard';
+import FMASSUB6 from './FMAS/RET_AddTranction';
+import FMASSUB7 from './FMAS/RET_EditTransaction';
+import FMASSUB8 from './FMAS/RET_TransactionReport';
+import FMASSUB9 from './FMAS/PM_PayrollTable';
+import FMASSUB10 from './FMAS/PM_AddPayroll';
+import FMASSUB11 from './FMAS/PM_EditPayroll';
+import FMASSUB12 from './FMAS/PM_PayrollReport';
+import FMASSUB13 from './FMAS/FM_FinancialTable';
+import FMASSUB14 from './FMAS/FM_FinancialReport';
+import FMASSUB15 from './FMAS/AM_AuditTable';
+import FMASSUB16 from './FMAS/AM_AuditReport';
+import CDSMSUB1 from './CDSM/PPS_Calendera';
+import CDSMSUB2 from './CDSM/PPS_ProposedProgram';
+import CDSMSUB3 from './CDSM/PPS_ProgramSchedule';
+import CDSMSUB4 from './CDSM/PPS_ApprovedProgram'
+import { UserRoleProvider } from './context/UserRoleContext'; 
+import EventDetail from './CDSM/Resident/EventDetail';
+import Notification from './CDSM/Resident/ResidentNotification';
+import FinalNotif from './CDSM/Resident/FinalNotif';
+import FirstNotif from './CDSM/Resident/FirstNotif';
+import SecondNotif from './CDSM/Resident/SecondNotif';
+import BeneficiaryRequests from './CDSM/SecretaryBeneficiaryManagement/BeneficiaryRequests';
+import DetailedView from './CDSM/SecretaryBeneficiaryManagement/DetailedView';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+
+
+const ProgramStack = () => (
+    <Stack.Navigator
+      initialRouteName="ProgramSchedule"
+      screenOptions={{
+        headerStyle: { backgroundColor: '#710808' },
+        headerTintColor: '#fff',
+      }}
+    >
+      <Stack.Screen
+        name="ProgramSchedule"
+        component={ProgramSchedule}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EventDetail"
+        component={EventDetail}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+  
+  const NotificationStack = () => (
+    <Stack.Navigator
+      initialRouteName="Notification"
+      screenOptions={{
+        headerStyle: { backgroundColor: '#710808' },
+        headerTintColor: '#fff',
+      }}
+    >
+      <Stack.Screen
+        name="Notification"
+        component={Notification}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FinalNotif"
+        component={FinalNotif}
+        options={({ navigation }) => ({
+            header: () => <CustomHeader navigation={navigation} />,
+        })}
+      />
+      <Stack.Screen
+        name="FirstNotif"
+        component={FirstNotif}
+        options={({ navigation }) => ({
+            header: () => <CustomHeader navigation={navigation} />,
+        })}
+      />
+      <Stack.Screen
+        name="SecondNotif"
+        component={SecondNotif}
+        options={({ navigation }) => ({
+            header: () => <CustomHeader navigation={navigation} />,
+        })}
+      />
+    </Stack.Navigator>
+  );
+  
+  const BeneficiaryStack = () => (
+    <Stack.Navigator
+      initialRouteName="BeneficiaryManagement"
+      screenOptions={{
+        headerStyle: { backgroundColor: '#710808' },
+        headerTintColor: '#fff',
+      }}
+    >
+      <Stack.Screen
+        name="BeneficiaryRequests"
+        component={BeneficiaryRequests}
+        options={({ navigation }) => ({
+            header: () => <CustomHeader navigation={navigation} />,
+        })}
+      />
+      <Stack.Screen
+      name="DetailedView"
+        component={DetailedView}
+        options={({ navigation }) => ({
+            header: () => <CustomHeader navigation={navigation} />,
+        })}
+      />
+
+    </Stack.Navigator>
+  );
 
 const HomeStack = () => (
     <Stack.Navigator>
@@ -441,12 +554,413 @@ const BMStack = () => (
     </Stack.Navigator>
 );
 
+const BDStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Budget Dashboard" 
+            component={FMASSUB1} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const ADStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Add Budget" 
+            component={FMASSUB2} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const EBStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Edit Budget" 
+            component={FMASSUB3} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const BRStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Budget Report" 
+            component={FMASSUB4} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+
 
 const NotifStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
             name="Notification" 
-            component={CDSM6} 
+            component={NotifStack} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const TDStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Transaction Dashboard" 
+            component={FMASSUB5} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const ATStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Add Transaction" 
+            component={FMASSUB6} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const ETStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Edit Transaction" 
+            component={FMASSUB7} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const TRStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Transaction Report" 
+            component={FMASSUB8} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const PTStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Payroll Table" 
+            component={FMASSUB9} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const APStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Add Payroll" 
+            component={FMASSUB10} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const EPStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Edit Payroll" 
+            component={FMASSUB11} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const PRStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Payroll Report" 
+            component={FMASSUB12} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const FTStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Financial Table" 
+            component={FMASSUB13} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const FRStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Financial Report" 
+            component={FMASSUB14} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const ATTStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Audit Table" 
+            component={FMASSUB15} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const ARStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Audit Report" 
+            component={FMASSUB16} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const CalendarStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="PPS_Calendar" 
+            component={CDSMSUB1} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const PPStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="ProposedProgram" 
+            component={CDSMSUB2} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const PSStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Program Schedule" 
+            component={CDSMSUB3} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const PRRStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="ApprovedProgram" 
+            component={CDSMSUB4} 
             options={({ navigation }) => ({
                 header: () => <Header_subscreen navigation={navigation} />,
                 headerLeft: () => (
@@ -482,7 +996,7 @@ function DrawerNavigator() {
             }}
         >
             <Drawer.Screen
-                name="Home"
+                name="Home1"
                 component={HomeStack}
                 options={({ navigation }) => ({
                     header: () => <Header_subscreen navigation={navigation} />,
@@ -513,22 +1027,20 @@ function DrawerNavigator() {
                     // No drawerLabel option means the label will not be shown
                 }}
             />
-            <Drawer.Screen
-                name="CensusData"
-                component={CensusDataStack}
-                options={{
-                    headerShown: false,
-                    // No drawerLabel option means the label will not be shown
-                }}
-            />
-            <Drawer.Screen
-                name="BudgetPlanningandMonitoring"
-                component={BPMStack}
-                options={({ navigation }) => ({
-                    header: () => <Header_subscreen navigation={navigation} />,
-                    // No drawerLabel option means the label will not be shown
-                })}
-            />
+                <Drawer.Screen
+                    name="CensusData"
+                    component={CensusDataStack}
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+                <Drawer.Screen
+                    name="BudgetPlanningandMonitoring"
+                    component={BPMStack}
+                    options={({ navigation }) => ({
+                        header: () => <Header_subscreen navigation={navigation} />,
+                    })}
+                />
             <Drawer.Screen
                 name="RevenueandExpenseTracking"
                 component={RETStack}
@@ -627,7 +1139,7 @@ function DrawerNavigator() {
             />
             <Drawer.Screen
                 name="BeneficiaryManagement"
-                component={BMStack}
+                component={BeneficiaryStack}
                 options={{
                     headerShown: false,
                     // No drawerLabel option means the label will not be shown
@@ -635,7 +1147,164 @@ function DrawerNavigator() {
             />
             <Drawer.Screen
                 name="Notification"
-                component={NotifStack}
+                component={NotificationStack}
+                options={{ header: () => <Header_subscreen title={'Welcome'} /> }}
+             />
+              <Drawer.Screen
+                name="BudgetDashboard"
+                component={BDStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="AddBudget"
+                component={ADStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="EditBudget"
+                component={EBStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="BudgetReport"
+                component={BRStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="TransactionDashboard"
+                component={TDStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="AddTransaction"
+                component={ATStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="EditTransaction"
+                component={ETStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="TransactionReport"
+                component={TRStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                <Drawer.Screen
+                name="PayrollTable"
+                component={PTStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="AddPayroll"
+                component={APStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="EditPayroll"
+                component={EPStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="PayrollReport"
+                component={PRStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                     <Drawer.Screen
+                name="FinancialTable"
+                component={FTStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="AuditTable"
+                component={ATTStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                    <Drawer.Screen
+                name="AuditReport"
+                component={ARStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="FinancialReport"
+                component={FRStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                            <Drawer.Screen
+                name="Calendar"
+                component={CalendarStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="Proposed Program"
+                component={PPStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+                    <Drawer.Screen
+                name="Program Schedule"
+                component={PSStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+              <Drawer.Screen
+                name="Approved Program"
+                component={PRRStack}
                 options={{
                     headerShown: false,
                     // No drawerLabel option means the label will not be shown
@@ -648,32 +1317,44 @@ function DrawerNavigator() {
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Splash">
-                <Stack.Screen
+            <UserRoleProvider>
+                <Stack.Navigator initialRouteName="Splash">
+                    <Stack.Screen
                     name="Splash"
                     component={SplashScreens}
-                    options={{
-                        headerShown: false
-                    }}
-                />
-                <Stack.Screen
+                    options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
                     name="LogIn"
                     component={LoginScreen}
-                    options={{
-                        header: () => <CustomHeader title={'Welcome'} />
-                    }}
-                />
-                <Stack.Screen
-                    name="Home"
+                    options={{ header: () => <CustomHeader title={'Welcome'} /> }}
+                    />
+                    <Stack.Screen
+                    name="Homes"
                     component={DrawerNavigator}
-                    options={{
-                        headerShown: false
-                    }}
-                />
+                    options={{ headerShown: false }}
+                    />
+                      <Stack.Screen
+                    name="Event"
+                    component={ProgramStack}
+                    options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                    name="EventDetail"
+                    component={EventDetail}
+                    options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                    name="Notification"
+                    component={NotificationStack}
+                    options={{ headerShown: false }}
+                    />
             </Stack.Navigator>
+          </UserRoleProvider>
         </NavigationContainer>
+
     );
-}
+  };
 
 const styles = StyleSheet.create({
     container: {

@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Events = () => {
+const AddBudget = () => {
   return (
     <View>
-      <Text>Events</Text>
+      <Text>AddBudget</Text>
     </View>
   )
 }
 
-export default Events
+export default AddBudget

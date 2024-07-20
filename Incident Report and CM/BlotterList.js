@@ -1,71 +1,70 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
 
 const BlotterList = () => {
+  const [search, setSearch] = useState('');
+  const navigation = useNavigation();
+
+  const updateSearch = (text) => {
+    setSearch(text);
+    // Perform search logic here
+  };
+
   return (
-    <View style={styles.blotterList}>
-  
-    </View>
-  ); 
-}
-
-class App extends React.Component {
-  state = {
-    search: '',
-  };
-
-  updateSearch = (search) => {
-    this.setState({ search });
-  };
-
-  render() {
-    const { search } = this.state;
-
-    return (
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.searchContainerWrapper}>
         <SearchBar
           placeholder="Type Here..."
-          onChangeText={this.updateSearch}
+          onChangeText={updateSearch}
           value={search}
+          platform="default"
           containerStyle={styles.searchContainer}
-          inputContainerStyle={styles.searchInputContainer}
-          inputStyle={styles.searchInput}
+          inputContainerStyle={styles.inputContainer}
+          inputStyle={styles.inputStyle}
+          cancelButtonProps={{ color: '#000' }} // Customize cancel button color
         />
-        <BlotterList />
       </View>
-    );
-  }
-}
+      <TouchableOpacity onPress={() => navigation.navigate('BlotterForm')} style={styles.drawerItem}>
+        <Icon style={styles.iconn} name="pluscircle" size={50} color="#710808" />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 10,
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  searchContainerWrapper: {
+    width: '100%',
   },
   searchContainer: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#fff',
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
     paddingHorizontal: 0,
-   
   },
-  searchInputContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 30,
-    borderWidth: 1,
-    borderColor: '#ccc', // Outline color for SearchBar
+  inputContainer: {
+    backgroundColor: '#f0f0f0',
   },
-  searchInput: {
-    backgroundColor: '#fff',
-
+  inputStyle: {
+    backgroundColor: '#f0f0f0',
+    fontSize: 16,
   },
-
-  blotterText: {
-    color: '#000',
-    fontSize: 18,
+  drawerItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 30, // Add some padding to avoid bottom screen edges
+  },
+  iconn: {
+    marginLeft: 'auto',
   },
 });
 
-export default App;
+export default BlotterList;

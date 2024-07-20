@@ -5,10 +5,10 @@ import Icon1 from 'react-native-vector-icons/FontAwesome5';
 
 const Header_subscreen = ({ navigation }) => {
     return (
-        <View style={styles.header}>   
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                <Icon1 name={'bars'} style={styles.icon} size={30} color="white" />
-            </TouchableOpacity> 
+        <View style={styles.header}>    
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                    <Icon1 name={'bars'} style={styles.icon} size={30} color="white" />
+                </TouchableOpacity> 
             <Image
                 source={require('../assets/logo.png')} // Replace with your image path
                 style={styles.image}
@@ -29,6 +29,8 @@ const styles = StyleSheet.create({
         paddingTop: 20, // Added padding to top align content
         marginTop: 50, 
     },
+
+ 
     icon: {
         position: 'absolute',
         right: 140,

@@ -11,7 +11,9 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import { useNavigation } from '@react-navigation/native';
 
 const CustomDrawerContent = (props) => {
+  const { role } = props; // Get the role prop
   const [expandedItems, setExpandedItems] = useState([]);
+  const [nestedExpandedItems, setNestedExpandedItems] = useState([]);
   const navigation = useNavigation();
 
   const toggleSubMenu = (item) => {
@@ -22,8 +24,6 @@ const CustomDrawerContent = (props) => {
     }
   };
 
-  const [nestedExpandedItems, setNestedExpandedItems] = useState([]);
-
   const toggleNestedSubMenu = (item) => {
     if (nestedExpandedItems.includes(item)) {
       setNestedExpandedItems(nestedExpandedItems.filter((i) => i !== item));
@@ -31,18 +31,15 @@ const CustomDrawerContent = (props) => {
       setNestedExpandedItems([...nestedExpandedItems, item]);
     }
   };
-  
 
   const handleLogout = () => {
-    // Assuming you have some kind of authentication management in your app,
-    // you might want to clear any auth tokens here as well.
-
-    // Reset navigation stack and navigate to SplashScreen
     navigation.reset({
       index: 0,
       routes: [{ name: 'Splash' }],
     });
   };
+
+  const disableForRoles = (roles) => roles.includes(role);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#710808' }}>
@@ -61,7 +58,7 @@ const CustomDrawerContent = (props) => {
         <View style={{ paddingTop: 10 }}>
         </View>
         <View style={styles.drawerContent}>
-          <TouchableOpacity onPress={() => toggleSubMenu('ResidentInfo')} style={styles.drawerItem}>
+          <TouchableOpacity onPress={() => toggleSubMenu('ResidentInfo')} style={styles.drawerItem}disabled={disableForRoles(['resident', 'captain'])}>
             <Icon1 name={'torsos-all-female'} size={24} color="white" />
             <Text style={styles.drawerItemText}>
               Resident Information{'\n'}and Census Management
@@ -104,16 +101,16 @@ const CustomDrawerContent = (props) => {
             </TouchableOpacity>
             {nestedExpandedItems.includes('Budget Planning and Monitoring') && (
               <View style={styles.subSubMenu}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Budget Dashboard')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('BudgetDashboard')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Budget Dashboard</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Add Budget')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('AddBudget')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Add Budget</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Edit Budget')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('EditBudget')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Edit Budget</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Budget Report')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('BudgetReport')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Budget Report</Text>
                 </TouchableOpacity>
               </View>
@@ -127,16 +124,16 @@ const CustomDrawerContent = (props) => {
             </TouchableOpacity>
             {nestedExpandedItems.includes('Revenue and Expense Tracking') && (
               <View style={styles.subSubMenu}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Transaction Dashboard')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('TransactionDashboard')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Transaction Dashboard</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Add Transaction')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('AddTransaction')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Add Transaction</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Edit Transaction')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('EditTransaction')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Edit Transaction</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Transaction Report')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('TransactionReport')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Transaction Report</Text>
                 </TouchableOpacity> 
               </View>
@@ -150,16 +147,16 @@ const CustomDrawerContent = (props) => {
             </TouchableOpacity>
             {nestedExpandedItems.includes('Payroll Management') && (
               <View style={styles.subSubMenu}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Payroll Table')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('PayrollTable')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Payroll Table</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Add Payroll')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('AddPayroll')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Add Payroll</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Edit Payroll<')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('EditPayroll')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Edit Payroll</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Payroll Report')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('PayrollReport')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Payroll Report</Text>
                 </TouchableOpacity>
               </View>
@@ -173,10 +170,10 @@ const CustomDrawerContent = (props) => {
             </TouchableOpacity>
             {nestedExpandedItems.includes('Financial Management') && (
               <View style={styles.subSubMenu}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Financial Table')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('FinancialTable')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Financial Table</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Financial Report')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('FinancialReport')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Financial Report</Text>
                 </TouchableOpacity>
               </View>
@@ -190,10 +187,10 @@ const CustomDrawerContent = (props) => {
             </TouchableOpacity>
             {nestedExpandedItems.includes('Audit Management') && (
               <View style={styles.subSubMenu}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Audit Table')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('AuditTable')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Audit Table</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Audit Report')} style={styles.drawerSubItem}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('AuditReport')} style={styles.drawerSubItem}>
                   <Text style={styles.drawernestedSubItemText}>Audit Report</Text>
                 </TouchableOpacity>
               </View>
@@ -261,7 +258,7 @@ const CustomDrawerContent = (props) => {
                   <Text style={styles.drawernestedSubItemText}>Program Schedule</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => props.navigation.navigate('Approved Program')} style={styles.drawerSubItem}>
-                  <Text style={styles.drawernestedSubItemText}>Payroll Report</Text>
+                  <Text style={styles.drawernestedSubItemText}>Approved Program</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -355,7 +352,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginVertical: 5,
     flexDirection: 'row',
-    justifyContent: 'space-between'
   },
   drawerSubItemText: {
     fontSize: 16,
@@ -366,17 +362,17 @@ const styles = StyleSheet.create({
   },
   subMenu: {
     paddingLeft: 20,
-
+    marginStart:'auto',
   },
   subSubMenu: {
-    alignItems: 'flex-start',
+    marginEnd: 'auto',
     marginLeft:'auto',
   },
 
   drawernestedSubItemText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: 'black',
+    color: 'gray',
   }
 });
 
