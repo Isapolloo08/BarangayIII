@@ -59,10 +59,59 @@ import FirstNotif from './CDSM/Resident/FirstNotif';
 import SecondNotif from './CDSM/Resident/SecondNotif';
 import BeneficiaryRequests from './CDSM/SecretaryBeneficiaryManagement/BeneficiaryRequests';
 import DetailedView from './CDSM/SecretaryBeneficiaryManagement/DetailedView';
-
+import AddResidentRegister from './Resident Information and CM/RICM inside screen/AddResidentRegister';
+import ConfirmationScreen from './Resident Information and CM/RICM inside screen/ConfirmationScreen';
+import CreateAccount from './Resident Information and CM/RICM inside screen/CreateAccount';
+import HeaderRegister from './Resident Information and CM/RICM inside screen/HeaderRegister';
+import ListOfRequestDocx from './Resident Information and CM/RICM inside screen/ListOfRequestDocx';
+import ResidentDetails from './Resident Information and CM/RICM inside screen/ResidentDetails';
+import RegisterScreen from './Screen/RegisterScreen';
+import Reports, { EditReportScreen, ViewReportScreen } from './Resident Information and CM/Reports';
+import listprogram from './FMAS/programlist';
+import Addprogram from './FMAS/programadd';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
+const ProgramAdd = () => (
+    <Stack.Navigator>
+    <Stack.Screen 
+        name="Home_Home" 
+        component={Addprogram} 
+        options={({ navigation }) => ({
+            header: () => <Header_subscreen navigation={navigation} />,
+            headerLeft: () => (
+                <TouchableOpacity
+                    style={{ marginLeft: 10 }}
+                    onPress={() => navigation.toggleDrawer()}
+                >
+                    <Ionicons name="menu" size={30} color="#000" />
+                </TouchableOpacity>
+            ),
+        })}
+    />
+</Stack.Navigator>
+);
+
+
+const Programlist = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="Home_Home" 
+            component={listprogram} 
+            options={({ navigation }) => ({
+                header: () => <Header_subscreen navigation={navigation} />,
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: 10 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={30} color="#000" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
 
 const ProgramStack = () => (
     <Stack.Navigator
@@ -148,6 +197,39 @@ const ProgramStack = () => (
     </Stack.Navigator>
   );
 
+  const RegisterStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="RegisterScreen" 
+            component={RegisterScreen} 
+            options={{
+                headerTitle: 'REGISTER ACCOUNT',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+        <Stack.Screen 
+            name="CreateAccount" 
+            component={CreateAccount} 
+            options={{
+                headerTitle: 'REGISTER ACCOUNT',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+    </Stack.Navigator>
+);
+
 const HomeStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
@@ -168,6 +250,59 @@ const HomeStack = () => (
     </Stack.Navigator>
 );
 
+const ReportsStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="REPORTS" 
+            component={Reports} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+        <Stack.Screen 
+            name="EditReportScreen" 
+            component={EditReportScreen} 
+            options={{
+                headerTitle: 'REPORTS',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+        <Stack.Screen 
+            name="ViewReportScreen" 
+            component={ViewReportScreen} 
+            options={{
+                headerTitle: 'REPORTS',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+    </Stack.Navigator>
+);
+
 const RequestDocumentStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
@@ -184,6 +319,34 @@ const RequestDocumentStack = () => (
                     </TouchableOpacity>
                 ),
             })}
+        />
+        <Stack.Screen 
+            name="ConfirmationScreen" 
+            component={ConfirmationScreen} 
+            options={{
+                headerTitle: 'REQUEST DETAILS',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+        <Stack.Screen 
+            name="ListOfRequestDocx" 
+            component={ListOfRequestDocx} 
+            options={{
+                headerTitle: 'List Of Request Documents',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
         />
     </Stack.Navigator>
 );
@@ -225,6 +388,27 @@ const RRPStack = () => (
                     </TouchableOpacity>
                 ),
             })}
+        />
+                <Stack.Screen 
+            name="AddResidentRegister" 
+            component={AddResidentRegister} 
+            options={({ navigation }) => ({
+                header: () => <HeaderRegister navigation={navigation} title="REGISTER ACCOUNT"/>,
+            })}
+        />
+         <Stack.Screen 
+            name="ResidentDetails" 
+            component={ResidentDetails} 
+            options={{
+                headerTitle: 'RESIDENT DETAILS',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
         />
     </Stack.Navigator>
 );
@@ -1174,6 +1358,14 @@ function DrawerNavigator() {
                     // No drawerLabel option means the label will not be shown
                 }}
             />
+                        <Drawer.Screen
+                name="Reports"
+                component={ReportsStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
               <Drawer.Screen
                 name="BudgetReport"
                 component={BRStack}
@@ -1302,13 +1494,23 @@ function DrawerNavigator() {
                     // No drawerLabel option means the label will not be shown
                 }}
             />
-              <Drawer.Screen
+                <Drawer.Screen
                 name="Approved Program"
                 component={PRRStack}
                 options={{
-                    headerShown: false,
+                headerShown: false,
                     // No drawerLabel option means the label will not be shown
                 }}
+            />
+                <Drawer.Screen
+                name="programlist"
+                component={Programlist}
+                options={{ headerShown: false }}
+            />
+                <Drawer.Screen
+                name="programadd"
+                component={ProgramAdd}
+                options={{ headerShown: false }}
             />
         </Drawer.Navigator>
     );
@@ -1349,6 +1551,17 @@ export default function App() {
                     component={NotificationStack}
                     options={{ headerShown: false }}
                     />
+                    <Stack.Screen
+                    name="Register"
+                    component={RegisterStack}
+                    options={{
+                        headerShown: false,
+                        
+                    // No drawerLabel option means the label will not be shown
+                    
+                }}
+                
+                />
             </Stack.Navigator>
           </UserRoleProvider>
         </NavigationContainer>

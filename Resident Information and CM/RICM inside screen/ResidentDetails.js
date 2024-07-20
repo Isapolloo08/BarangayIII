@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react';
-const SubScreen2 = () => (
+
+const ResidentDetails = () => (
   <View style={styles.container}>
     <Text style={styles.text}>Di mo ba ako miss?</Text>
   </View>
@@ -19,4 +20,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default SubScreen2;
+export default ResidentDetails;
