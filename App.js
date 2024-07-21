@@ -1,28 +1,24 @@
 // App.js
-import 'react-native-gesture-handler';
-import React from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import React from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import SplashScreens from './Screen/SplashScreen';
-import LoginScreen from './Screen/LogInScreen';
-import CustomHeader from './Navigation/CustomHeader';
-import CustomDrawerContent from './Navigation/CustomDrawerContent';
-import HomeScreen from './Screen/HomeScreen';
-import Header_subscreen from './Navigation/Header_subscreen';
-import SubScreen1 from './Resident Information and CM/RequestDocument';
-import SubScreen2 from './Resident Information and CM/ServiceRecord';
-import SubScreen3 from './Resident Information and CM/ResidentRegistrationandProfiling';
-import SubScreen4 from './Resident Information and CM/CensusData';
+import CDSM5 from './CDSM/BeneficiaryManagement';
+import CDSM1 from './CDSM/Dashboard';
+import CDSM3 from './CDSM/Events';
+import CDSM6 from './CDSM/Notification';
+import CDSM2 from './CDSM/ProgramPlanningandScheduling';
+import CDSM4 from './CDSM/ResourceManagement';
 import FMAS1 from './FMAS/AuditManagement';
+import FMAS5 from './FMAS/BudgetPlanningandMonitoring';
 import FMAS2 from './FMAS/FinancialManagement';
 import FMAS3 from './FMAS/PayrollManagement';
 import FMAS4 from './FMAS/RevenueandExpenseTracking';
-import FMAS5 from './FMAS/BudgetPlanningandMonitoring';
+import IRCM2 from './Incident Report and CM/BlotterFrom';
 import IRCM1 from './Incident Report and CM/BlotterList';
-import IRCM2 from './Incident Report and CM/BlotterFrom'
 import IRCM3 from './Incident Report and CM/CaseReport';
 import IRCM4 from './Incident Report and CM/SummonSchedule';
 import CDSM1 from './CDSM/Dashboard';
@@ -133,6 +129,61 @@ const ProgramStack = () => (
       />
     </Stack.Navigator>
   );
+  
+const ReportsStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="REPORTS" 
+            component={Reports} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+        <Stack.Screen 
+            name="EditReportScreen" 
+            component={EditReportScreen} 
+            options={{
+                headerTitle: 'REPORTS',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+        <Stack.Screen 
+            name="ViewReportScreen" 
+            component={ViewReportScreen} 
+            options={{
+                headerTitle: 'REPORTS',
+                headerStyle: {
+                    backgroundColor: '#710808', // Red background color
+                },
+                headerTintColor: '#FFFFFF', // Text color in header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Style for header title
+                },
+            }}
+        />
+    </Stack.Navigator>
+);
+
+
   
   const NotificationStack = () => (
     <Stack.Navigator
@@ -250,11 +301,11 @@ const HomeStack = () => (
     </Stack.Navigator>
 );
 
-const ReportsStack = () => (
+const RequestDocumentStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="REPORTS" 
-            component={Reports} 
+            name="REQUEST DOCUMENT" 
+            component={RequestDocument} 
             options={({ navigation }) => ({
                 headerStyle: {
                     backgroundColor: '#710808', // Set header background color to maroon
@@ -271,82 +322,6 @@ const ReportsStack = () => (
                     </TouchableOpacity>
                 ),
             })}
-        />
-        <Stack.Screen 
-            name="EditReportScreen" 
-            component={EditReportScreen} 
-            options={{
-                headerTitle: 'REPORTS',
-                headerStyle: {
-                    backgroundColor: '#710808', // Red background color
-                },
-                headerTintColor: '#FFFFFF', // Text color in header
-                headerTitleStyle: {
-                    fontWeight: 'bold', // Style for header title
-                },
-            }}
-        />
-        <Stack.Screen 
-            name="ViewReportScreen" 
-            component={ViewReportScreen} 
-            options={{
-                headerTitle: 'REPORTS',
-                headerStyle: {
-                    backgroundColor: '#710808', // Red background color
-                },
-                headerTintColor: '#FFFFFF', // Text color in header
-                headerTitleStyle: {
-                    fontWeight: 'bold', // Style for header title
-                },
-            }}
-        />
-    </Stack.Navigator>
-);
-
-const RequestDocumentStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen 
-            name="Home_RequestDocument" 
-            component={SubScreen1} 
-            options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
-                headerLeft: () => (
-                    <TouchableOpacity
-                        style={{ marginLeft: 10 }}
-                        onPress={() => navigation.toggleDrawer()}
-                    >
-                        <Ionicons name="menu" size={30} color="#000" />
-                    </TouchableOpacity>
-                ),
-            })}
-        />
-        <Stack.Screen 
-            name="ConfirmationScreen" 
-            component={ConfirmationScreen} 
-            options={{
-                headerTitle: 'REQUEST DETAILS',
-                headerStyle: {
-                    backgroundColor: '#710808', // Red background color
-                },
-                headerTintColor: '#FFFFFF', // Text color in header
-                headerTitleStyle: {
-                    fontWeight: 'bold', // Style for header title
-                },
-            }}
-        />
-        <Stack.Screen 
-            name="ListOfRequestDocx" 
-            component={ListOfRequestDocx} 
-            options={{
-                headerTitle: 'List Of Request Documents',
-                headerStyle: {
-                    backgroundColor: '#710808', // Red background color
-                },
-                headerTintColor: '#FFFFFF', // Text color in header
-                headerTitleStyle: {
-                    fontWeight: 'bold', // Style for header title
-                },
-            }}
         />
     </Stack.Navigator>
 );
@@ -371,20 +346,100 @@ const ServiceRecord = () => (
     </Stack.Navigator>
 );
 
+const RDRStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="RESIDENT DOCUMENT REQUEST" 
+            component={ResidentDocumentRequest} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const ResidentRecordsStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="RESIDENT RECORDS" 
+            component={ResidentRecords} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
+const RARStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen 
+            name="RESIDENT ACCOUNT REQUEST" 
+            component={ResidentAccountRequest} 
+            options={({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
+                headerLeft: () => (
+                    <TouchableOpacity
+                        style={{ marginLeft: -8,
+                         }}
+                        onPress={() => navigation.toggleDrawer()}
+                    >
+                        <Ionicons name="menu" size={40} color="white" />
+                    </TouchableOpacity>
+                ),
+            })}
+        />
+    </Stack.Navigator>
+);
+
 
 const RRPStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="Home_ResidentRegistrationandProfiling" 
-            component={SubScreen3} 
+            name="RESIDENT REGISTRATION" 
+            component={ResidentRegistrationandProfiling} 
             options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
                 headerLeft: () => (
                     <TouchableOpacity
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: -8,
+                         }}
                         onPress={() => navigation.toggleDrawer()}
                     >
-                        <Ionicons name="menu" size={30} color="#000" />
+                        <Ionicons name="menu" size={40} color="white" />
                     </TouchableOpacity>
                 ),
             })}
@@ -416,22 +471,29 @@ const RRPStack = () => (
 const CensusDataStack = () => (
     <Stack.Navigator>
         <Stack.Screen 
-            name="Home_CensusData" 
+            name="CENSUS DATA" 
             component={SubScreen4} 
             options={({ navigation }) => ({
-                header: () => <Header_subscreen navigation={navigation} />,
+                headerStyle: {
+                    backgroundColor: '#710808', // Set header background color to maroon
+                },
+                headerTintColor: '#fff', // Set header text color to white
+                headerTitleAlign: 'center', // Center the header title
                 headerLeft: () => (
                     <TouchableOpacity
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: -8,
+                         }}
                         onPress={() => navigation.toggleDrawer()}
                     >
-                        <Ionicons name="menu" size={30} color="#000" />
+                        <Ionicons name="menu" size={40} color="white" />
                     </TouchableOpacity>
                 ),
             })}
         />
     </Stack.Navigator>
 );
+
+
 
 const BPMStack = () => (
     <Stack.Navigator>
@@ -1198,6 +1260,30 @@ function DrawerNavigator() {
             <Drawer.Screen
                 name="ServiceRecord"
                 component={ServiceRecord}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="ResidentDocumentRequest"
+                component={RDRStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="ResidentRecords"
+                component={ResidentRecordsStack}
+                options={{
+                    headerShown: false,
+                    // No drawerLabel option means the label will not be shown
+                }}
+            />
+            <Drawer.Screen
+                name="ResidentAccountRequest"
+                component={RARStack}
                 options={{
                     headerShown: false,
                     // No drawerLabel option means the label will not be shown

@@ -71,13 +71,6 @@ const LoginScreen = () => {
         setShowPassword(!showPassword);
     };
 
-    const registrationscreen = () => {
-        console.log('hiiii');
-        navigation.navigate('Register');
-    }
-
- 
-
     return (
         <View style={styles.container}>
             <Image
@@ -109,9 +102,7 @@ const LoginScreen = () => {
             </TouchableOpacity>
             <View style={styles.bottomTextContainer}>
                 <Text style={styles.bottomText}>Forgot Password?</Text>
-                <TouchableOpacity>
-                <Text style={styles.bottomText} onPress={registrationscreen}>Register</Text>
-                </TouchableOpacity>
+                <Text style={styles.bottomText}>Register</Text>
             </View>
         </View>
     );
