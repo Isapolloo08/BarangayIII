@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const RequestDocument = () => {
     const [name, setName] = useState('');
@@ -75,16 +75,44 @@ const RequestDocument = () => {
         setShowDatePicker(true);
     };
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const onDateChange = (event, selectedDate) => {
-        const currentDate = selectedDate || dateOfClaim;
+        if (selectedDate) {
+            if (selectedDate >= today) {
+                setDateOfClaim(selectedDate);
+            } else {
+                alert('Please select a date today or in the future.');
+            }
+        }
         setShowDatePicker(false);
-        setDateOfClaim(currentDate);
+    };
+    
+
+    const navigateToListOfRequestDocx = () => {
+        const requestDocsData = [
+            { name: 'John Doe', docType: 'Barangay ID', date: '2024-07-20', status: 'pending' },
+            { name: 'Jane Smith', docType: 'Certificate of Indigency', date: '2024-07-19', status: 'claimed' },
+            { name: 'Michael Johnson', docType: 'Barangay Clearance', date: '2024-07-18', status: 'printing' },
+            { name: 'Alex Mendez', docType: 'Business Permit', date: '2024-07-19', status: 'payment' },
+            { name: 'Fourth Vergara', docType: 'Barangay Certificate', date: '2024-07-18', status: 'unclaimed' },
+        ];
+
+        navigation.navigate('ListOfRequestDocx', { requests: requestDocsData });
     };
 
     return (
         <View style={styles.container}>
             <KeyboardAwareScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.background}>
+                <View style={styles.buttonListContainer}>
+                    <TouchableOpacity 
+                        style={styles.listButton} 
+                        onPress={navigateToListOfRequestDocx}>
+                        <Text style={styles.listButtonText}>View List of Request Documents</Text>
+                    </TouchableOpacity>
+                </View>
+                    <View style={styles.background}>
                     <View style={styles.box}>
                         <View style={styles.inputContainer}>
                             <Text>Name:</Text>
@@ -105,7 +133,7 @@ const RequestDocument = () => {
                             />
                         </View>
                         <View style={styles.inputContainer}>
-                            <Text>Document Type:</Text>
+                            <Text>Document Type: <Text style={styles.required}>*</Text> </Text>
                             <TouchableOpacity
                                 style={styles.dropdownButton}
                                 onPress={() => setIsDocTypeDropdownOpen(!isDocTypeDropdownOpen)}
@@ -136,7 +164,7 @@ const RequestDocument = () => {
                             </Modal>
                         </View>
                         <View style={styles.inputContainer}>
-                            <Text>Purpose:</Text>
+                            <Text>Purpose: <Text style={styles.required}>*</Text> </Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Enter Purpose"
@@ -145,7 +173,7 @@ const RequestDocument = () => {
                             />
                         </View>
                         <View style={styles.inputContainer}>
-                            <Text>Date of Claim:</Text>
+                            <Text>Date of Claim: <Text style={styles.required}>*</Text> </Text>
                             <TouchableOpacity onPress={showDatePickerModal} style={styles.datePickerText}>
                                 <Text>{dateOfClaim.toLocaleDateString()}</Text>
                             </TouchableOpacity>
@@ -155,11 +183,12 @@ const RequestDocument = () => {
                                     mode="date"
                                     display="default"
                                     onChange={onDateChange}
+                                    minimumDate={today} // Prevent selecting past dates
                                 />
                             )}
                         </View>
                         <View style={styles.inputContainer}>
-                            <Text>Time Claim:</Text>
+                            <Text>Time Claim: <Text style={styles.required}>*</Text> </Text>
                             <TouchableOpacity
                                 style={styles.dropdownButton}
                                 onPress={() => setIsTimeClaimDropdownOpen(!isTimeClaimDropdownOpen)}
@@ -174,7 +203,7 @@ const RequestDocument = () => {
                                 <View style={styles.modalBackground}>
                                     <View style={styles.modalContainer}>
                                         <FlatList
-                                            data={['Morning', 'Afternoon']}
+                                            data={['8:00 am', '9:00 am', '10:00 am', '1:00 pm','2:00 pm', '3:00 pm','4:00 pm']}
                                             renderItem={({ item }) => (
                                                 <TouchableOpacity
                                                     style={styles.dropdownItem}
@@ -370,6 +399,27 @@ const styles = StyleSheet.create({
     modalButtonText: {
         color: '#FFFFFF',
         fontSize: 16,
+    },
+    listButton: {
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'green',
+    borderColor: 'green',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    },
+    buttonListContainer: {
+        marginBottom: 25,
+    },
+    listButtonText: {
+    fontSize: 14,
+    color: '#fff',
+    },
+    required: {
+    color: 'red',
+    fontSize: 16
     },
 });
 

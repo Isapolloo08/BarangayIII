@@ -1,19 +1,21 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useReportContext } from './ReportContext'; // Adjust the import path as needed
 
 const ViewReportScreen = ({ route }) => {
-  const { reportData } = route.params;
+  const { report } = route.params;
+  const { reportData } = useReportContext();
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <Text style={styles.title}>View Report: {report}</Text>
       <View style={styles.reportBox}>
-        <Text style={styles.title}>Report Details</Text>
-        {/* Display report data here */}
-        <Text>Report ID: {reportData.id}</Text>
-        <Text>Report Name: {reportData.name}</Text>
-        {/* Add other report fields as needed */}
+        <Text style={[styles.reportTitle, { fontFamily: reportData[report].font, fontSize: reportData[report].fontSize, fontStyle: reportData[report].fontStyle }]}>{report}</Text>
+        <Text style={{ fontFamily: reportData[report].font, fontSize: reportData[report].fontSize, fontStyle: reportData[report].fontStyle }}>
+          {reportData[report].content}
+        </Text>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -21,15 +23,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
-  },
-  reportBox: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    borderRadius: 10,
   },
   title: {
     fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  reportBox: {
+    backgroundColor: 'lightyellow',
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  reportTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },

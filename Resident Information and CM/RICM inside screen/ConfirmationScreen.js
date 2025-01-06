@@ -1,28 +1,28 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform, Alert } from 'react-native';
-import * as Print from 'expo-print';
 import * as MediaLibrary from 'expo-media-library';
+import * as Print from 'expo-print';
+import React from 'react';
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const ConfirmationScreen = ({ route, navigation }) => {
     const { name, address, docType, purpose, dateOfClaim, timeClaim } = route.params;
 
-    const handlePrint = async () => {
+    const handlePrintAndNavigate = async () => {
         const htmlContent = `
             <html>
                 <head>
                     <style>
                         body { font-family: Arial, sans-serif; }
-                        h1 { color: #333; }
+                        h2 { color: #333; }
                         p { margin: 10px 0; }
-                        .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .box { padding: 20px; background-color: white; border: 1px solid lightgray; border-radius: 10px; margin-bottom: 20px; }
-                        .row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid lightgray; padding-bottom: 10px; }
+                        .container { width: 100%; max-width: 300px; margin: 0 auto; padding: 20px; }
+                        .box { padding: 8px; background-color: lightgray; border: 1px solid lightgray; border-radius: 10px; margin-bottom: 15px; }
+                        .row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid black; padding-bottom: 10px; }
                         .label { font-weight: bold; margin-right: 10px; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
-                        <h1>Document Request Confirmation</h1>
+                        <h2>Document Request Confirmation</h2>
                         <div class="box">
                             <div class="row">
                                 <div class="label">Name:</div>
@@ -57,14 +57,14 @@ const ConfirmationScreen = ({ route, navigation }) => {
                 </body>
             </html>
         `;
-    
+
         try {
             const { uri } = await Print.printToFileAsync({ 
                 html: htmlContent, 
-                width: 6.5 * 72,   // 8.5 inches converted to points (1 inch = 72 points)
-                height: 6.00 * 72, // 4.25 inches converted to points
+                width: 3.5 * 72,   // 8.5 inches converted to points (1 inch = 72 points)
+                height: 5.00 * 72, // 4.25 inches converted to points
             });
-    
+
             if (Platform.OS === 'ios') {
                 await MediaLibrary.saveToLibraryAsync(uri);
                 Alert.alert('Confirmation', 'Confirmation PDF downloaded successfully!');
@@ -77,6 +77,14 @@ const ConfirmationScreen = ({ route, navigation }) => {
                     throw new Error('Permission to save PDF not granted');
                 }
             }
+
+            // After printing and saving the PDF, navigate to ListOfRequestDocx
+            navigation.navigate('ListOfRequestDocx', {
+                requests: [
+                    { name, address, docType, purpose, date: dateOfClaim, status: 'pending', timeClaim },
+                ],
+            });
+
         } catch (error) {
             console.error('Error printing PDF:', error);
             Alert.alert('Error', 'Failed to download PDF. Please try again.');
@@ -118,7 +126,7 @@ const ConfirmationScreen = ({ route, navigation }) => {
                         </View>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.finishButton} onPress={handlePrint}>
+                <TouchableOpacity style={styles.finishButton} onPress={handlePrintAndNavigate}>
                     <Text style={styles.buttonText}>Download PDF Confirmation</Text>
                 </TouchableOpacity>
             </View>

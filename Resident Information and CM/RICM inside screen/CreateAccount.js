@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -14,6 +15,19 @@ const CreateAccount = (props) => {
     const handleAccount = () => {
         if (regUsername !== '' && regPassword !== '' && confirmPassword !== '') {
             if (regPassword === confirmPassword) {
+                axios.post('http://brgyapp.lesterintheclouds.com/createUsers.php', {
+                    regUsername, regPassword
+                })
+                .then(response => {
+                    if(response.data.success){
+                        Alert.alert('Succesful', response.data.message);
+                    }
+                    else{  
+                    }
+                })
+                .catch(error => {
+                    Alert.alert('Failedss', 'Failed to add.');
+                })
                 // Navigate to the appropriate screen after successful registration
                 navigation.navigate('LogIn'); // Replace 'LogInScreen' with your desired screen name
             } else {
@@ -48,7 +62,7 @@ const CreateAccount = (props) => {
                         style={styles.showPasswordButton}
                         onPress={() => setShowPassword(!showPassword)}
                     >
-                        <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="#9B9393" />
+                        <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} color="#9B9393" />
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.label}>Confirm Password</Text>
@@ -64,7 +78,7 @@ const CreateAccount = (props) => {
                         style={styles.showPasswordButton}
                         onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
-                        <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={20} color="#9B9393" />
+                        <Icon name={showConfirmPassword ? 'eye' : 'eye-off'} size={20} color="#9B9393" />
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleAccount}>

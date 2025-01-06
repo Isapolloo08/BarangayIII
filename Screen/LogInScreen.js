@@ -3,6 +3,8 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } fro
 import { UserRoleContext } from '../context/UserRoleContext';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import RegisterScreen from './RegisterScreen'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 const LoginScreen = () => {
@@ -11,10 +13,10 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const { setUserRole } = useContext(UserRoleContext);
-
+  const Stack = createNativeStackNavigator();
   const handleLogin = () => {
 
-    axios.post('https://lesterintheclouds.com:3306/login', { username, password })
+    axios.post('http://brgyapp.lesterintheclouds.com/login.php', { username, password })
         .then(response => {
             let userRole = null;
             if (response.data.success) {
@@ -29,10 +31,60 @@ const LoginScreen = () => {
             }
         })
         .catch(error => {
-            // console.error('Login failed', error.response ? error.response.data : error.message);
+            console.error('Login failed', error.response ? error.response.data : error.message);
             Alert.alert('Login failed', 'An error occurred');
         });
-    // let userRole = null;
+   
+  };
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+    const navigateToRegister = () => {
+        navigation.navigate('Register'); // Ensure the name matches the one in your navigator
+    };
+
+    
+    
+
+    return (
+        <View style={styles.container}>
+            <Image
+                source={require('../assets/profileIcon.png')}
+                style={styles.image}
+            />
+            <Text style={styles.title}>Login</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+            />  
+            <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity style={styles.showPasswordButton} onPress={toggleShowPassword}>
+                <View style={[styles.checkbox, showPassword && styles.checkedCheckbox]}>
+                    {showPassword && <Text style={styles.checkboxText}>✓</Text>}
+                </View>
+                <Text style={styles.showPasswordText}>Show Password</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  onPress={navigateToRegister} >
+            <View style={styles.bottomTextContainer}>
+                <Text style={styles.bottomText}>Register</Text>
+            </View>
+            </TouchableOpacity>
+        </View>
+    );
+};
+ // let userRole = null;
 
     // if (username === 'Admin' && password === 'Password') {
     //   userRole = 'admin';
@@ -65,49 +117,6 @@ const LoginScreen = () => {
     //         .catch(error => {
     //             console.error('There was an error logging in!', error);
     //         });
-  };
-
-    const toggleShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
-
-    return (
-        <View style={styles.container}>
-            <Image
-                source={require('../assets/profileIcon.png')}
-                style={styles.image}
-            />
-            <Text style={styles.title}>Login</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Username"
-                value={username}
-                onChangeText={setUsername}
-            />  
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-            />
-            <TouchableOpacity style={styles.showPasswordButton} onPress={toggleShowPassword}>
-                <View style={[styles.checkbox, showPassword && styles.checkedCheckbox]}>
-                    {showPassword && <Text style={styles.checkboxText}>✓</Text>}
-                </View>
-                <Text style={styles.showPasswordText}>Show Password</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <View style={styles.bottomTextContainer}>
-                <Text style={styles.bottomText}>Forgot Password?</Text>
-                <Text style={styles.bottomText}>Register</Text>
-            </View>
-        </View>
-    );
-};
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

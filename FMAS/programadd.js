@@ -1,75 +1,116 @@
-// app/addprogram.jsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Linking, ScrollView } from 'react-native';
 
-export default function ProgramAdd({ navigation }) {
-  const [name, setName] = useState('');
-  const [budget, setBudget] = useState('');
+export default function BudgetSummary({ route, navigation }) {
+  // Sample program details, in a real app this would come from props or state
+  const program = {
+    name: 'Health and Sanitation Program',
+    aipCode: 'AIP123',
+    accountCode: 'ACC456',
+    proposedAmount: '₱1000',
+    budgetCategory: 'Development',
+    expectedResult: 'This project aims to improve the health and its sanitation.',
+    date: '2024-08-01',
+    signatureUri: 'https://example.com/signature.pdf', // Placeholder link for signature
+  };
 
-  const handleAdd = () => {
-    // Add add logic here
-    console.log('Add Program:', { name, budget });
-    navigation.goBack();
+  const handleViewSignature = () => {
+    Linking.openURL(program.signatureUri).catch(err =>
+      console.error("Couldn't load page", err)
+    );
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Budget Summary</Text>
       <View style={styles.card}>
-        <Text style={styles.title}>Add New Program</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Program Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Budget"
-          keyboardType="numeric"
-          value={budget}
-          onChangeText={setBudget}
-        />
-        <Button title="Add Program" onPress={handleAdd} />
+        <Text style={styles.text}>Name of the Project:</Text>
+        <Text style={styles.detail}>{program.name}</Text>
+        <Text style={styles.text}>AIP Code:</Text>
+        <Text style={styles.detail}>{program.aipCode}</Text>
+        <Text style={styles.text}>Account Code:</Text>
+        <Text style={styles.detail}>{program.accountCode}</Text>
+        <Text style={styles.text}>Proposed Amount:</Text>
+        <Text style={styles.detail}>{program.proposedAmount}</Text>
+        <Text style={styles.text}>Budget Category:</Text>
+        <Text style={styles.detail}>{program.budgetCategory}</Text>
+        <Text style={styles.text}>Expected Result:</Text>
+        <Text style={styles.detail}>{program.expectedResult}</Text>
+        <Text style={styles.text}>Date:</Text>
+        <Text style={styles.detail}>{program.date}</Text>
       </View>
-    </View>
+      <View style={styles.card}>
+        <Text style={styles.text}>Signature:</Text>
+        <TouchableOpacity onPress={handleViewSignature} style={styles.signatureCard}>
+          <Text style={styles.signatureText}>View Signature.pdf</Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity style={styles.homeButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.buttonText}>Home</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
+    flexGrow: 1,
     padding: 20,
-    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#710808',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   card: {
-    width: '100%',
-    maxWidth: 340,
-    padding: 20,
-    borderRadius: 10,
     backgroundColor: '#fff',
-    shadowColor: '#000',
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 20,
+    elevation: 2, // Adds shadow for Android
+    shadowColor: '#000', // Adds shadow for iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 4,
-    marginBottom: 20,
-    alignItems: 'center',
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#710808',
-    marginBottom: 10,
-  },
-  input: {
-    width: '100%',
-    marginBottom: 15,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#710808',
-    borderRadius: 5,
+  text: {
     fontSize: 16,
     color: '#710808',
+    marginBottom: 5,
+  },
+  detail: {
+    fontSize: 18,
+    color: '#333',
+    marginBottom: 15,
+  },
+  signatureCard: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#dcdcdc',
+    alignItems: 'center',
+  },
+  signatureText: {
+    fontSize: 16,
+    color: '#1e90ff',
+    textDecorationLine: 'underline',
+  },
+  homeButton: {
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#710808',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginTop: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

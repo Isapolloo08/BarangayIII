@@ -11,12 +11,13 @@ import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { UserRoleContext } from '../context/UserRoleContext';
 import BPM from '../FMAS/BudgetPlanningandMonitoring';
+
 const CustomDrawerContent = (props) => {
-  const { role } = props; // Get the role prop
+  const { userRole } = useContext(UserRoleContext);
+  const { username } = useContext(UserRoleContext);
   const [expandedItems, setExpandedItems] = useState([]);
   const [nestedExpandedItems, setNestedExpandedItems] = useState([]);
   const navigation = useNavigation();
-  const { setUserRole } = useContext(UserRoleContext);
 
   const toggleSubMenu = (item) => {
     setExpandedItems((prevItems) =>
@@ -36,8 +37,8 @@ const CustomDrawerContent = (props) => {
       routes: [{ name: 'Splash' }],
     });
   };
-    
-  const disableForRoles = (roles) => roles.includes(setUserRole);
+  const disableForRoles = (roles) => !roles.includes(userRole);
+  const enableForRoles = (roles) => roles.includes(userRole);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#710808' }}>
@@ -46,7 +47,7 @@ const CustomDrawerContent = (props) => {
           <View style={{ flexDirection: 'row' }}>
             <Image source={require('../assets/profile.png')} style={{ height: 110, width: 110, resizeMode: 'cover' }} />
             <View style={{ flexDirection: 'column', marginLeft: 20, marginTop: 30 }}>
-              <Text style={{ color: 'white', fontSize: 30, fontFamily: 'Roboto', fontWeight: 'bold' }}>Miss U</Text>
+              <Text style={{ color: 'white', fontSize: 30, fontFamily: 'Roboto', fontWeight: 'bold' }}>{username}</Text>
               <Text style={{ color: 'white', fontSize: 18 }}>09632991145</Text>
             </View>
           </View>
@@ -55,8 +56,8 @@ const CustomDrawerContent = (props) => {
         <View style={styles.drawerContent}>
           <TouchableOpacity
             onPress={() => toggleSubMenu('ResidentInfo')}
-            style={[styles.drawerItem, disableForRoles(['resident', 'captain']) && styles.disabledItem]}
-            disabled={disableForRoles(['resident', 'captain'])}
+            style={[styles.drawerItem, !enableForRoles(['resident', 'treasurer', 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+            disabled={!enableForRoles(['resident', 'treasurer', 'kagawad', 'secretary', 'kapitan'])}
           >
             <Icon1 name={'torsos-all-female'} size={24} color="white" />
             <Text style={styles.drawerItemText}>Resident Information{'\n'}and Census Management</Text>
@@ -64,37 +65,84 @@ const CustomDrawerContent = (props) => {
           </TouchableOpacity>
           {expandedItems.includes('ResidentInfo') && (
             <View style={styles.subMenu}>
-              <TouchableOpacity onPress={() => props.navigation.navigate('RequestDocument')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Request Document</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('RequestDocument')}
+                style={[styles.drawerSubItem, enableForRoles(['resident']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles(['resident', 'treasurer'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident', 'treasurer']) && styles.disabledItemText]}>
+                  Request Document
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentRegistrationandProfiling')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Resident Registration and Profiling</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ResidentRegistrationandProfiling')}
+                style={[styles.drawerSubItem, enableForRoles([ 'kagawad', 'secretary', 'kapitan']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles([ 'kagawad', 'secretary', 'kapitan'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Resident Registration and Profiling
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('CensusData')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Census Data</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('CensusData')}
+                style={[styles.drawerSubItem, enableForRoles(['kagawad', 'secretary', 'kapitan']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles(['kagawad', 'secretary', 'kapitan'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Census Data
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentDocumentRequest')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Resident Documents Request</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ResidentDocumentRequest')}
+                style={[styles.drawerSubItem, enableForRoles(['treasurer']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles(['treasurer'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Resident Documents Request
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentRecords')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Resident Records</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ResidentRecords')}
+                style={[styles.drawerSubItem, enableForRoles(['secretary', 'kapitan']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles(['secretary', 'kapitan'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Resident Records
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ResidentAccountRequest')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Resident Account Request</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ResidentAccountRequest')}
+                style={[styles.drawerSubItem, enableForRoles(['secretary', 'kapitan']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles(['secretary', 'kapitan'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Resident Account Request
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('Reports')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Reports</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Reports')}
+                style={[styles.drawerSubItem, enableForRoles(['secretary', 'kapitan']) ? null : styles.disabledItem]}
+                disabled={!enableForRoles(['secretary', 'kapitan'])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Reports
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ServiceRecord')} style={styles.drawerSubItem}>
-                <Text style={styles.drawerSubItemText}>Service Record</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ServiceRecord')}
+                style={[styles.drawerSubItem, enableForRoles([]) ? null : styles.disabledItem]}
+                disabled={!enableForRoles([])}
+              >
+                <Text style={[styles.drawerSubItemText, !enableForRoles(['resident']) && styles.disabledItemText]}>
+                  Service Record
+                </Text>
               </TouchableOpacity>
             </View>
           )}
-
           <TouchableOpacity
             onPress={() => toggleSubMenu('Financial Management')}
-            style={[styles.drawerItem, disableForRoles(['resident', 'captain']) && styles.disabledItem]}
-            disabled={disableForRoles(['resident', 'captain'])}
+            style={[styles.drawerItem, disableForRoles(['resident', 'kagawad', 'treasurer', 'secretary', 'kapitan']) && styles.disabledItem]}
+            disabled={disableForRoles(['resident', 'kagawad', 'treasurer', 'secretary', 'kapitan'])}
           >
             <Awsome name={'bank'} size={16} color="white" />
             <Text style={styles.drawerItemText}>Financial Management{'\n'}and Accounting System</Text>
@@ -104,36 +152,39 @@ const CustomDrawerContent = (props) => {
             <View style={styles.subMenu}>
               <TouchableOpacity
                 onPress={() => props.navigation.navigate('BudgetPlanningandMonitoring')}
-                style={[styles.drawerSubItem, disableForRoles(['resident']) && styles.disabledItem]}
-                disabled={disableForRoles(['resident'])}
+                style={[styles.drawerSubItem, disableForRoles(['kagawad', 'treasurer', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'treasurer', 'kapitan'])}
               >
                 <Text style={styles.drawerSubItemText}>Budget Planning and Monitoring</Text>
               </TouchableOpacity>
               <TouchableOpacity
                  onPress={() => props.navigation.navigate('RevenueandExpenseTracking')}
-                style={[styles.drawerSubItem, disableForRoles(['resident']) && styles.disabledItem]}
-                disabled={disableForRoles(['resident'])}
+                style={[styles.drawerSubItem, disableForRoles(['kagawad', 'treasurer', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'treasurer', 'secretary' , 'kapitan' ])}
               >
                 <Text style={styles.drawerSubItemText}>Revenue and Expense Tracking</Text>
               </TouchableOpacity>
             
               <TouchableOpacity
                  onPress={() => props.navigation.navigate('PayrollManagement')}
-                style={[styles.drawerSubItem, disableForRoles(['resident']) && styles.disabledItem]}
-                disabled={disableForRoles(['resident'])}
+                style={[styles.drawerSubItem, disableForRoles(['treasurer', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['treasurer', 'kapitan'])}
               >
                 <Text style={styles.drawerSubItemText}>Payroll Management</Text>
 
               </TouchableOpacity>
              <TouchableOpacity 
             onPress={() => props.navigation.navigate('FinancialManagement')} 
-            style={styles.drawerSubItem}
+            style={[styles.drawerSubItem, disableForRoles(['kagawad', 'treasurer', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'treasurer', 'kapitan'])}
+            
             >
               <Text style={styles.drawerSubItemText}>Financial Management</Text>
             </TouchableOpacity>
             <TouchableOpacity 
             onPress={() => props.navigation.navigate('AuditsManagement')} 
-            style={styles.drawerSubItem}
+            style={[styles.drawerSubItem, disableForRoles(['kagawad', 'treasurer', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'treasurer', 'secretary', 'kapitan'])}
             >
               <Text style={styles.drawerSubItemText}>Audit Management</Text>
             </TouchableOpacity>
@@ -142,7 +193,8 @@ const CustomDrawerContent = (props) => {
 
           <TouchableOpacity
             onPress={() => toggleSubMenu('Incident Report')}
-            style={styles.drawerItem}
+            style={[styles.drawerItem, disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan'])}
           >
             <Awsome6 name={'file-lines'} size={24} color="white" />
             <Text style={styles.drawerItemText}>Incident Report Case{'\n'}Management</Text>
@@ -150,19 +202,31 @@ const CustomDrawerContent = (props) => {
           </TouchableOpacity>
           {expandedItems.includes('Incident Report') && (
             <View style={styles.subMenu}>
-              <TouchableOpacity onPress={() => props.navigation.navigate('BlotterForm')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('BlotterForm')} 
+              style={[styles.drawerSubItem, disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan'])}>
                 <Icon name={'form'} size={24} color="white" />
                 <Text style={styles.drawerSubItemText}>Blotter Form</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('BlotterList')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('BlotterList')} 
+              style={[styles.drawerSubItem, disableForRoles([ 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles([ 'kagawad', 'secretary', 'kapitan'])}>
               <Awsome6 name={'table-list'} size={24} color="white" />
                 <Text style={styles.drawerSubItemText}>Blotter List</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('CaseReport')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('CaseReport')} 
+              style={[styles.drawerSubItem, disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan'])}>
               <Matcommunity name={'briefcase-edit-outline'} size={24} color={'white'}/>
                 <Text style={styles.drawerSubItemText}>Case Report</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('SummonSchedule')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('SummonSchedule')} 
+              style={[styles.drawerSubItem, disableForRoles(['secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['secretary', 'kapitan'])}>
                 <Material name={'schedule'} size={24} color={'white'} /> 
                 <Text style={styles.drawerSubItemText}>Summon Schedule/{'\n'}Calendar</Text>
               </TouchableOpacity>
@@ -170,7 +234,8 @@ const CustomDrawerContent = (props) => {
           )}
           <TouchableOpacity
             onPress={() => toggleSubMenu('Community Development')}
-            style={styles.drawerItem}
+            style={[styles.drawerItem, disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan'])}
           >
              <Material name={'miscellaneous-services'} size={24} color="white" />
             <Text style={styles.drawerItemText}>Community Development{'\n'}and Services Management</Text>
@@ -178,42 +243,70 @@ const CustomDrawerContent = (props) => {
           </TouchableOpacity>
           {expandedItems.includes('Community Development') && (
             <View style={styles.subMenu}>
-              <TouchableOpacity onPress={() => props.navigation.navigate('Dashboard')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('Dashboard')} 
+              style={[styles.drawerSubItem, disableForRoles(['kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kapitan'])}>
                 <Text style={styles.drawerSubItemText}>Dashboard</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 onPress={() => toggleNestedSubMenu('Program Planning and Scheduling')} 
-                style={styles.drawerSubItem}
+                style={[styles.drawerSubItem, disableForRoles(['kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'secretary', 'kapitan'])}
                 >
                 <Text style={styles.drawerSubItemText}>Program Planning and Scheduling</Text>
                 <Icon name={nestedExpandedItems.includes('Program Planning and Scheduling') ? 'up' : 'down'} size={24} color="white" />
               </TouchableOpacity>
               {nestedExpandedItems.includes('Program Planning and Scheduling') && (
               <View style={styles.subSubMenu}>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Calendar')} style={styles.drawerSubItem}>
+                <TouchableOpacity 
+                onPress={() => props.navigation.navigate('Calendar')} 
+                style={[styles.drawerSubItem, disableForRoles(['kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'secretary', 'kapitan'])}>
                   <Text style={styles.drawernestedSubItemText}>Calendar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Proposed Program')} style={styles.drawerSubItem}>
+                <TouchableOpacity 
+                onPress={() => props.navigation.navigate('Proposed Program')} 
+                style={[styles.drawerSubItem, disableForRoles(['kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kapitan'])}>
                   <Text style={styles.drawernestedSubItemText}>Proposed Program</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Program Schedule')} style={styles.drawerSubItem}>
+                <TouchableOpacity 
+                onPress={() => props.navigation.navigate('Program Schedule')} 
+                style={[styles.drawerSubItem, disableForRoles(['kagawad']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad'])}>
                   <Text style={styles.drawernestedSubItemText}>Program Schedule</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => props.navigation.navigate('Approved Program')} style={styles.drawerSubItem}>
-                  <Text style={styles.drawernestedSubItemText}>Approved Program</Text>
+                <TouchableOpacity 
+                onPress={() => props.navigation.navigate('Approved Program')} 
+                style={[styles.drawerSubItem, disableForRoles(['kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'secretary', 'kapitan'])}>
+                  <Text style={styles.drawernestedSubItemText}>Pending Programs</Text>
                 </TouchableOpacity>
               </View>
             )}
-              <TouchableOpacity onPress={() => props.navigation.navigate('Events')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('Events')} 
+              style={[styles.drawerSubItem, disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['resident', 'kagawad', 'secretary', 'kapitan'])}>
                 <Text style={styles.drawerSubItemText}>Events</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('ResourceManagement')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('ResourceManagement')} 
+              style={[styles.drawerSubItem, disableForRoles(['kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'secretary', 'kapitan'])}>
                 <Text style={styles.drawerSubItemText}>Resource Management</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('BeneficiaryManagement')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('BeneficiaryManagement')} 
+              style={[styles.drawerSubItem, disableForRoles(['kagawad', 'secretary', 'kapitan']) && styles.disabledItem]}
+                disabled={disableForRoles(['kagawad', 'secretary', 'kapitan'])}>
                 <Text style={styles.drawerSubItemText}>Beneficiary Management</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => props.navigation.navigate('Notification')} style={styles.drawerSubItem}>
+              <TouchableOpacity 
+              onPress={() => props.navigation.navigate('Notification')} 
+              style={[styles.drawerSubItem, disableForRoles(['resident']) && styles.disabledItem]}
+                disabled={disableForRoles(['resident'])}>
                 <Text style={styles.drawerSubItemText}>Notification</Text>
               </TouchableOpacity>
             </View>
@@ -269,6 +362,7 @@ const CustomDrawerContent = (props) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   drawerContent: {

@@ -1,10 +1,12 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Pagination from './Pagination'; // Adjust the path if necessary
 
 const AddResidentRegister = ({ navigation, route }) => {
     const { addNewResident } = route.params;
+
     const [isHouseholdHead, setIsHouseholdHead] = useState(null);
     const [householdNumber, setHouseholdNumber] = useState('');
     const [householdHeadName, setHouseholdHeadName] = useState('');
@@ -19,13 +21,21 @@ const AddResidentRegister = ({ navigation, route }) => {
     const [suffix, setSuffix] = useState('');
     const [isSuffixDropdownOpen, setIsSuffixDropdownOpen] = useState(false);
     const [contactNumber, setContactNumber] = useState('');
+    const [region, setRegion] = useState('');
+    const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
+    const [province, setProvince] = useState('');
+    const [isProvinceDropdownOpen, setIsProvinceDropdownOpen] = useState(false);
+    const [municipality, setMunicipality] = useState('');
+    const [isMunicipalityDropdownOpen, setIsMunicipalityDropdownOpen] = useState(false);
     const [purok, setPurok] = useState('');
     const [isPurokDropdownOpen, setIsPurokDropdownOpen] = useState(false);
     const [barangay, setBarangay] = useState('');
     const [isBarangayDropdownOpen, setIsBarangayDropdownOpen] = useState(false);
     const [otherBarangay, setOtherBarangay] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState(new Date());
+    const [birthPlace, setBirthPlace] = useState('');
     const [age, setAge] = useState('');
+    const [numericAge, setNumericAge] = useState(0);
     const [sex, setSex] = useState('');
     const [isSexDropdownOpen, setIsSexDropdownOpen] = useState(false);
     const [civilStatus, setCivilStatus] = useState('');
@@ -71,6 +81,14 @@ const AddResidentRegister = ({ navigation, route }) => {
     const [isTypeOfWaterSourceDropdownOpen, setIsTypeOfWaterSourceDropdownOpen] = useState(false);
     const [typeOfToiletFacility, setTypeOfToiletFacility] = useState('');
     const [isTypeOfToiletFacilityDropdownOpen, setIsTypeOfToiletFacilityDropdownOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const maxDate = new Date(); // Current date
+    const minDate = new Date('1900-01-01'); // January 1, 1900
+
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 2;
 
@@ -80,41 +98,100 @@ const AddResidentRegister = ({ navigation, route }) => {
         }
     };
 
-    const [errors, setErrors] = useState({});
+    const validateFields = () => {
+        if (isHouseholdHead == null) return false;
+        if (isHouseholdHead === 'Yes') {
+            if (!householdNumber) return false;
+        }
+        if (isHouseholdHead === 'No') {
+            if (!householdHeadName) return false;
+            if (!relationship) return false;
+            if (relationship === 'Other' && !selectedValue) return false;
+            if (!householdNumber) return false;
+        }
+        if (!lastName) return false;
+        if (!firstName) return false;
+        if (middleName === 'Enter Middle Name' && !middleNameChoice) return false;
+        if (!region) return false;
+        if (!province) return false;
+        if (!municipality) return false;
+        if (!purok) return false;
+        if (!barangay) return false;
+        if (barangay === 'Other' && !otherBarangay) return false;
+        if (!sex) return false;
+        if (!civilStatus) return false;
+        if (psMember === 'Yes') {
+            if (!psHouseholdId) return false;
+        }
+        if (!medicalHistory) return false;
+        if (medicalHistory === 'Other' && !otherMedicalHistory) return false;
+        if (!typeOfWaterSource) return false;
+        if (!typeOfToiletFacility) return false;
+        return true;
+    };
 
     const handleSave = () => {
-        const newErrors = {};
-        if (!firstName) newErrors.firstName = true;
-        if (!lastName) newErrors.lastName = true;
-        if (!purok) newErrors.purok = true;
-        if (!barangay) newErrors.barangay = true;
-        // Add other required fields validation here...
-    
-        setErrors(newErrors);
-
-        if (Object.keys(newErrors).length > 0) {
-            Alert.alert("Please fill in all the information");
+        if (validateFields()) {
+            setIsSaveModalVisible(true);
         } else {
-            Alert.alert("Your data has been saved successfully!", '', [
-                {
-                    text: "Proceed",
-                    onPress: () => {
-                        navigation.navigate('ResidentDetails', {
-                            name: `${firstName} ${middleName} ${lastName} ${suffix}`,
-                            address: `${purok}, ${barangay}`,
-                            ...otherFields
-                        });
-                    },
-                    style: "cancel",
-                },
-            ]);
+            Alert.alert('Error', 'Please fill in all the require (*) information');
+            setShowError(true);
         }
     };
-    
-    const handleInputChange = (field, value) => {
-        setOtherFields({ ...otherFields, [field]: value });
+
+    const handleSaveConfirmation = () => {
+        const newResident = {
+            isHouseholdHead,
+            householdNumber,
+            householdHeadName,
+            relationship,
+            selectedValue,
+            lastName,
+            firstName,
+            middleName,
+            middleNameChoice,
+            suffix,
+            contactNumber,
+            region,
+            province,
+            municipality,
+            purok,
+            barangay,
+            otherBarangay,
+            dateOfBirth,
+            age,
+            sex,
+            lmp,
+            usingFpMethod,
+            familyPlanningMethodUsed,
+            otherFamilyPlanningMethodUsed,
+            familyPlanningStatus,
+            civilStatus,
+            citizenship,
+            otherCitizenship,
+            occupation,
+            otherOccupation,
+            educationalAttainment,
+            religion,
+            otherReligion,
+            ethnicity,
+            psMember,
+            psHouseholdId,
+            philhealthMember,
+            philhealthIdNumber,
+            membershipType,
+            philhealthCategory,
+            medicalHistory,
+            otherMedicalHistory,
+            classificationByAgeHealth,
+            typeOfWaterSource,
+            typeOfToiletFacility,
+        };
+        addNewResident(newResident);
+        navigation.goBack();
     };
 
+    
     const handleIsHouseholdHeadChange = (value) => {
         setIsHouseholdHead(value);
 
@@ -132,7 +209,7 @@ const AddResidentRegister = ({ navigation, route }) => {
             setPurok('');
             setBarangay('');
             setOtherBarangay('');
-            setDateOfBirth('');
+            setDateOfBirth(new Date());
             setAge('');
             setSex('');
             setCivilStatus('');
@@ -168,18 +245,19 @@ const AddResidentRegister = ({ navigation, route }) => {
             return (
                 <>
                     <View style={styles.inputContainer}>
-                        <Text>Household Head: {errors.householdHeadName && <Text style={styles.errorText}>*</Text>}</Text>
+                        <Text>Household Head: <Text style={styles.required}>*</Text> </Text>
+                        <Text style={{fontSize: 14, color: 'gray', fontStyle: 'italic'}}>(Last Name, First Name, Middle Name, Suffix)</Text>
                         <TextInput
-                            style={[styles.input, errors.firstName && styles.errorInput]}
+                            style={styles.input}
                             placeholder="Enter household head's name"
                             value={householdHeadName}
                             onChangeText={setHouseholdHeadName}
                         />
                     </View>
                     <View style={styles.inputContainer}>
-                        <Text>Relationship with household head: {errors.relationship && <Text style={styles.errorText}>*</Text>}</Text>
+                        <Text>Relationship with household head: <Text style={styles.required}>*</Text> </Text>
                         <TouchableOpacity
-                            style={[styles.dropdownButton, errors.relationship && styles.errorInput]}
+                            style={styles.dropdownButton}
                             onPress={() => setIsRelationshipDropdownOpen(!isRelationshipDropdownOpen)}
                         >
                             <Text>{selectedValue || 'Select relationship'}</Text>
@@ -193,7 +271,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                         <View style={styles.modalBackground}>
                             <View style={styles.modalContainer}>
                                 <FlatList
-                                    data={['Spouse', 'Son', 'Daughter', 'Other']}
+                                    data={['Spouse', 'Son', 'Daughter', 'Mother', 'Father', 'Grandfather', 'Grandmother', 'Uncle', 'Aunt', 'Nephew', 'Niece', 'Cousin', 'Other']}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity
                                             style={styles.dropdownItem}
@@ -223,10 +301,10 @@ const AddResidentRegister = ({ navigation, route }) => {
                         />
                     )}
                     <View style={styles.inputContainer}>
-                        <Text>Household Number: {errors.householdNumber && <Text style={styles.errorText}>*</Text>}</Text>
+                        <Text>Household Number: <Text style={styles.required}>*</Text> </Text>
                         <TextInput
-                            style={[styles.input, errors.householdNumber && styles.errorInput]}
-                            placeholder="Enter household number (e.g. 202411-02565)"
+                            style={styles.input}
+                            placeholder="Enter household (e.g. 202411-02565)"
                             value={householdNumber}
                             onChangeText={setHouseholdNumber}
                         />
@@ -236,10 +314,10 @@ const AddResidentRegister = ({ navigation, route }) => {
         } else if (isHouseholdHead === 'yes') {
             return (
                 <View style={styles.inputContainer}>
-                    <Text>Household Number: {errors.householdNumber && <Text style={styles.errorText}>*</Text>}</Text>
+                    <Text>Household Number: <Text style={styles.required}>*</Text> </Text>
                     <TextInput
-                        style={[styles.input, errors.householdNumber && styles.errorInput]}
-                        placeholder="Enter household number (e.g. 202411-02565)"
+                        style={styles.input}
+                        placeholder="Enter household (e.g. 202411-02565)"
                         value={householdNumber}
                         onChangeText={setHouseholdNumber}
                     />
@@ -298,6 +376,21 @@ const AddResidentRegister = ({ navigation, route }) => {
     const handlePurokSelection = (item) => {
         setPurok(item);
         setIsPurokDropdownOpen(false);
+    };
+
+    const handleRegionSelection = (item) => {
+        setRegion(item);
+        setIsRegionDropdownOpen(false);
+    };
+
+    const handleProvinceSelection = (item) => {
+        setProvince(item);
+        setIsProvinceDropdownOpen(false);
+    };
+
+    const handleMunicipalitySelection = (item) => {
+        setMunicipality(item);
+        setIsMunicipalityDropdownOpen(false);
     };
 
     const handleBarangaySelection = (item) => {
@@ -426,6 +519,95 @@ const AddResidentRegister = ({ navigation, route }) => {
         setIsTypeOfToiletFacilityDropdownOpen(false);
     }; 
     
+    const handleModalClose = () => {
+        setShowModal(false);
+    };
+
+    // Function to update date of birth
+    const onChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || dateOfBirth;
+        setShowDatePicker(false);
+        setDateOfBirth(currentDate);
+
+        // Calculate age and format it
+        const { years, months, days } = calculateAge(currentDate);
+        let ageText = '';
+        if (years > 0) {
+        ageText += years === 1 ? '1 year' : `${years} years`;
+        }
+        if (months > 0) {
+        ageText += ageText ? `, ` : '';
+        ageText += months === 1 ? '1 month' : `${months} months`;
+        }
+        if (days > 0) {
+        ageText += ageText ? `, ` : '';
+        ageText += days === 1 ? '1 day' : `${days} days`;
+        }
+
+        setAge(ageText); // Set the formatted age text
+        setNumericAge(years); // Set the numeric age for comparison
+        generateClassificationByAgeHealth(currentDate);
+    };
+
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birth = new Date(birthDate);
+      
+        let years = today.getFullYear() - birth.getFullYear();
+        let months = today.getMonth() - birth.getMonth();
+        let days = today.getDate() - birth.getDate();
+      
+        // Adjust if birth date is later in the month than today's date
+        if (days < 0) {
+          months--;
+          days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+        }
+      
+        // Adjust if birth month is later in the year than today's month
+        if (months < 0) {
+          years--;
+          months += 12;
+        }
+      
+        // Return age in years, months, and days
+        return { years, months, days };
+    };
+      
+    const generateClassificationByAgeHealth = (birthDate) => {
+        const { years, months, days } = calculateAge(birthDate);
+      
+        if (years === 0 && months < 1) {
+          // Age less than 1 month
+          setClassificationByAgeHealth('Newborn');
+        } else if (years === 0 && months < 12) {
+          // Age between 1 month and less than 1 year
+          setClassificationByAgeHealth('Infant');
+        } else if (years <= 4) {
+          // Age between 1 year and 4 years (including months)
+          setClassificationByAgeHealth('Pre-School Age');
+        } else if (years <= 9) {
+          // Age between 5 years and 9 years (including months)
+          setClassificationByAgeHealth('School Age');
+        } else if (years <= 19) {
+          // Age between 10 years and 19 years (including months)
+          setClassificationByAgeHealth('Adolescent');
+        } else if (years <= 59) {
+          // Age between 20 years and 59 years (including months)
+          setClassificationByAgeHealth('Adult');
+        } else {
+          // Age 60 years and above
+          setClassificationByAgeHealth('Senior Citizen');
+        }
+    };
+      
+
+    const showDatePickerModal = () => {
+        setShowDatePicker(true);
+    };
+    
+
+
+
     return (
         <KeyboardAwareScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
             <View style={styles.container}>
@@ -434,8 +616,8 @@ const AddResidentRegister = ({ navigation, route }) => {
                         <>
                             <Text style={styles.title}>I. Personal Information</Text>
                             <View style={styles.inputContainer}>
-                                <Text>Are you the household head? {errors.isHouseholdHead && <Text style={styles.errorText}>*</Text>}</Text>
-                                <View style={[styles.choiceContainer, errors.isHouseholdHead && styles.errorInput]}>
+                                <Text>Are you the household head? <Text style={styles.required}>*</Text> </Text>
+                                <View style={styles.choiceContainer}>
                                     <TouchableOpacity
                                         style={[styles.choiceButton, isHouseholdHead === 'yes' && styles.selectedChoice]}
                                         onPress={() => toggleChoice('yes')}
@@ -452,27 +634,27 @@ const AddResidentRegister = ({ navigation, route }) => {
                             </View>
                             {renderHouseholdHeadQuestions()}
                             <View style={styles.inputContainer}>
-                                <Text>Last Name: {errors.lastName && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Last Name: <Text style={styles.required}>*</Text> </Text>
                                 <TextInput
-                                    style={[styles.input, errors.lastName && styles.errorInput]}
+                                    style={styles.input}
                                     placeholder="Enter Last Name"
                                     value={lastName}
                                     onChangeText={setLastName}
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>First Name: {errors.firstName && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>First Name: <Text style={styles.required}>*</Text> </Text>
                                 <TextInput
-                                    style={[styles.input, errors.firstName && styles.errorInput]}
+                                    style={styles.input}
                                     placeholder="Enter First Name"
                                     value={firstName}
                                     onChangeText={setFirstName}
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Middle Name: {errors.middleName && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Middle Name: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.middleName && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsMiddleNameDropdownOpen(!isMiddleNameDropdownOpen)}
                                 >
                                     <Text>{middleNameChoice}</Text>
@@ -510,9 +692,9 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 )}
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Suffix: {errors.suffix && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Suffix:</Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.suffix && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsSuffixDropdownOpen(!isSuffixDropdownOpen)}>
                                     <Text>{suffix || 'Select Suffix'}</Text>
                                 </TouchableOpacity>
@@ -524,7 +706,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                                     <View style={styles.modalBackground}>
                                         <View style={styles.modalContainer}>
                                             <FlatList
-                                                data={['Jr.', 'Sr.', 'III', 'IV', 'None']}
+                                                data={['Jr.', 'Sr.', 'II', 'III', 'IV', 'V', 'VI', 'VI', 'VIII', 'IX', 'X', 'None']}
                                                 renderItem={({ item }) => (
                                                     <TouchableOpacity
                                                         style={styles.dropdownItem}
@@ -540,34 +722,34 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Contact Number: {errors.contactNumber && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Contact Number:</Text>
                                 <TextInput
-                                    style={[styles.input, errors.householdNumber && styles.errorInput]}
+                                    style={styles.input}
                                     placeholder="Enter Contact Number"
                                     value={contactNumber}
                                     onChangeText={setContactNumber}
                                 />
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Purok: {errors.purok && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Region: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.purok && styles.errorInput]}
-                                    onPress={() => setIsPurokDropdownOpen(!isPurokDropdownOpen)}>
-                                    <Text>{purok || 'Select Purok'}</Text>
+                                    style={styles.dropdownButton}
+                                    onPress={() => setIsRegionDropdownOpen(!isRegionDropdownOpen)}>
+                                    <Text>{region || 'Select Region'}</Text>
                                 </TouchableOpacity>
                                 <Modal
                                     transparent={true}
-                                    visible={isPurokDropdownOpen}
-                                    onRequestClose={() => setIsPurokDropdownOpen(false)}
+                                    visible={isRegionDropdownOpen}
+                                    onRequestClose={() => setIsRegionDropdownOpen(false)}
                                 >
                                     <View style={styles.modalBackground}>
                                         <View style={styles.modalContainer}>
                                             <FlatList
-                                                data={['Purok 1', 'Purok 2', 'Purok 3', 'Purok 4', 'Purok 5', 'Purok 6']}
+                                                data={['Region V']}
                                                 renderItem={({ item }) => (
                                                     <TouchableOpacity
                                                         style={styles.dropdownItem}
-                                                        onPress={() => handlePurokSelection(item)}
+                                                        onPress={() => handleRegionSelection(item)}
                                                     >
                                                         <Text>{item}</Text>
                                                     </TouchableOpacity>
@@ -579,9 +761,69 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Barangay: {errors.barangay && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Province: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.barangay && styles.errorInput]}
+                                    style={styles.dropdownButton}
+                                    onPress={() => setIsProvinceDropdownOpen(!isProvinceDropdownOpen)}>
+                                    <Text>{province || 'Select Province'}</Text>
+                                </TouchableOpacity>
+                                <Modal
+                                    transparent={true}
+                                    visible={isProvinceDropdownOpen}
+                                    onRequestClose={() => setIsProvinceDropdownOpen(false)}
+                                >
+                                    <View style={styles.modalBackground}>
+                                        <View style={styles.modalContainer}>
+                                            <FlatList
+                                                data={['Camarines Norte']}
+                                                renderItem={({ item }) => (
+                                                    <TouchableOpacity
+                                                        style={styles.dropdownItem}
+                                                        onPress={() => handleProvinceSelection(item)}
+                                                    >
+                                                        <Text>{item}</Text>
+                                                    </TouchableOpacity>
+                                                )}
+                                                keyExtractor={(item) => item}
+                                            />
+                                        </View>
+                                    </View>
+                                </Modal>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text>Municipality: <Text style={styles.required}>*</Text> </Text>
+                                <TouchableOpacity
+                                    style={styles.dropdownButton}
+                                    onPress={() => setIsMunicipalityDropdownOpen(!isMunicipalityDropdownOpen)}>
+                                    <Text>{municipality || 'Select Municipality'}</Text>
+                                </TouchableOpacity>
+                                <Modal
+                                    transparent={true}
+                                    visible={isMunicipalityDropdownOpen}
+                                    onRequestClose={() => setIsMunicipalityDropdownOpen(false)}
+                                >
+                                    <View style={styles.modalBackground}>
+                                        <View style={styles.modalContainer}>
+                                            <FlatList
+                                                data={['Daet (Capital)']}
+                                                renderItem={({ item }) => (
+                                                    <TouchableOpacity
+                                                        style={styles.dropdownItem}
+                                                        onPress={() => handleMunicipalitySelection(item)}
+                                                    >
+                                                        <Text>{item}</Text>
+                                                    </TouchableOpacity>
+                                                )}
+                                                keyExtractor={(item) => item}
+                                            />
+                                        </View>
+                                    </View>
+                                </Modal>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text>Barangay: <Text style={styles.required}>*</Text> </Text>
+                                <TouchableOpacity
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsBarangayDropdownOpen(!isBarangayDropdownOpen)}
                                 >
                                     <Text>{barangay || 'Select Barangay'}</Text>
@@ -625,27 +867,72 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 )}
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Date of Birth: {errors.dateOfBirth && <Text style={styles.errorText}>*</Text>}</Text>
-                                <TextInput
-                                    style={[styles.input, errors.dateOfBirth && styles.errorInput]}
-                                    placeholder="Enter Date of Birth"
-                                    value={dateOfBirth}
-                                    onChangeText={setDateOfBirth}
-                                />
-                            </View>
-                            <View style={styles.inputContainer}>
-                                <Text>Age: {errors.age && <Text style={styles.errorText}>*</Text>}</Text>
-                                <TextInput
-                                    style={[styles.input, errors.age && styles.errorInput]}
-                                    placeholder="Enter Age"
-                                    value={age}
-                                    onChangeText={setAge}
-                                />
-                            </View>
-                            <View style={styles.inputContainer}>
-                                <Text>Sex: {errors.sex && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Purok: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.sex && styles.errorInput]}
+                                    style={styles.dropdownButton}
+                                    onPress={() => setIsPurokDropdownOpen(!isPurokDropdownOpen)}>
+                                    <Text>{purok || 'Select Purok'}</Text>
+                                </TouchableOpacity>
+                                <Modal
+                                    transparent={true}
+                                    visible={isPurokDropdownOpen}
+                                    onRequestClose={() => setIsPurokDropdownOpen(false)}
+                                >
+                                    <View style={styles.modalBackground}>
+                                        <View style={styles.modalContainer}>
+                                            <FlatList
+                                                data={['Purok 1', 'Purok 2', 'Purok 3', 'Purok 4', 'Purok 5', 'Purok 6']}
+                                                renderItem={({ item }) => (
+                                                    <TouchableOpacity
+                                                        style={styles.dropdownItem}
+                                                        onPress={() => handlePurokSelection(item)}
+                                                    >
+                                                        <Text>{item}</Text>
+                                                    </TouchableOpacity>
+                                                )}
+                                                keyExtractor={(item) => item}
+                                            />
+                                        </View>
+                                    </View>
+                                </Modal>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text>Date of Birth: <Text style={styles.required}>*</Text> </Text>
+                                <TouchableOpacity onPress={showDatePickerModal} style={styles.datePickerText}>
+                                    <Text>{dateOfBirth.toLocaleDateString()}</Text>
+                                    </TouchableOpacity>
+                                    {showDatePicker && (
+                                        <DateTimePicker
+                                        value={dateOfBirth}
+                                        mode="date"
+                                        display="default"
+                                        maximumDate={maxDate}
+                                        minimumDate={minDate}
+                                        onChange={onChangeDate}
+                                    />
+                                )}
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text>Place of Birth: </Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter Place of Birth"
+                                    value={birthPlace}
+                                    onChangeText={setBirthPlace}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text>Age: <Text style={styles.required}>*</Text> </Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={age}
+                                    editable={false}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <Text>Sex: <Text style={styles.required}>*</Text> </Text>
+                                <TouchableOpacity
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsSexDropdownOpen(!isSexDropdownOpen)}
                                 >
                                     <Text>{sex || 'Select Sex'}</Text>
@@ -677,9 +964,9 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Civil Status: {errors.civilStatus && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Civil Status: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.civilStatus && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsCivilStatusDropdownOpen(!isCivilStatusDropdownOpen)}
                                 >
                                     <Text>{civilStatus || 'Select Civil Status'}</Text>
@@ -711,9 +998,9 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Citizenship: {errors.citizenship && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Citizenship:</Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.citizenship && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsCitizenshipDropdownOpen(!isCitizenshipDropdownOpen)}
                                 >
                                     <Text>{citizenship || 'Select Citizenship'}</Text>
@@ -757,9 +1044,9 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 )}
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Occupation: {errors.occupation && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Occupation:</Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.occupation && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsOccupationDropdownOpen(!isOccupationDropdownOpen)}
                                 >
                                     <Text>{occupation || 'Select Occupation'}</Text>
@@ -807,11 +1094,11 @@ const AddResidentRegister = ({ navigation, route }) => {
 
                     {currentPage === 2 && (
                         <>
-                            <Text style={styles.title}>II. Additional Information</Text>
+                            <Text style={styles.title}>II. Additional Data</Text>
                             <View style={styles.inputContainer}>
-                                <Text>Educational Attainment:{errors.educationalAttainment && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Educational Attainment:</Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.educationalAttainment && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsEducationalAttainmentDropdownOpen(!isEducationalAttainmentDropdownOpen)}>
                                     <Text>{educationalAttainment || 'Select Educational Attainment'}</Text>
                                 </TouchableOpacity>
@@ -839,9 +1126,9 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Religion: {errors.religion && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Religion:</Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.religion && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsReligionDropdownOpen(!isReligionDropdownOpen)}>
                                     <Text>{religion || 'Select Religion'}</Text>
                                 </TouchableOpacity>
@@ -884,9 +1171,9 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 )}
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Ethnicity: {errors.ethnicity && <Text style={styles.errorText}>*</Text>}</Text>
+                                <Text>Ethnicity:</Text>
                                 <TouchableOpacity
-                                    style={[styles.dropdownButton, errors.ethnicity && styles.errorInput]}
+                                    style={styles.dropdownButton}
                                     onPress={() => setIsEthnicityDropdownOpen(!isEthnicityDropdownOpen)}>
                                     <Text>{ethnicity || 'Select Ethnicity'}</Text>
                                 </TouchableOpacity>
@@ -914,7 +1201,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>4P's member?</Text>
+                                <Text>4P's member? <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
                                     style={styles.dropdownButton}
                                     onPress={() => setIsPsMemberDropdownOpen(!isPsMemberDropdownOpen)}>
@@ -1068,7 +1355,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                             </View>
                             
                             <View style={styles.inputContainer}>
-                                <Text>Medical History:</Text>
+                                <Text>Medical History: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
                                     style={styles.dropdownButton}
                                     onPress={() => setIsMedicalHistoryDropdownOpen(!isMedicalHistoryDropdownOpen)}>
@@ -1113,38 +1400,15 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 )}
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Classification By Age/Health Risk Group:</Text>
-                                <TouchableOpacity
-                                    style={styles.dropdownButton}
-                                    onPress={() => setIsClassificationByAgeHealthDropdownOpen(!isClassificationByAgeHealthDropdownOpen)}>
-                                    <Text>{classificationByAgeHealth || 'Select Classification By Age/Health Risk Group'}</Text>
-                                </TouchableOpacity>
-                                <Modal
-                                    transparent={true}
-                                    visible={isClassificationByAgeHealthDropdownOpen}
-                                    onRequestClose={() => setIsClassificationByAgeHealthDropdownOpen(false)}
-                                >
-                                    <View style={styles.modalBackground}>
-                                        <View style={styles.modalContainer}>
-                                            <FlatList
-                                                data={['Newborn (0-28 days)', 'Infant (0-1 y/o)', 'Pre-School Age (1-4 y/o)', 'School Age (5-9 y/o)', 'Adolescent (10-19 y/o)', 'Adult (20-59 y/o)', 'Senior Citizen (60-above y/o)']}
-                                                renderItem={({ item }) => (
-                                                    <TouchableOpacity
-                                                        style={styles.dropdownItem}
-                                                        onPress={() => handleClassificationByAgeHealthSelection(item)}
-                                                    >
-                                                        <Text>{item}</Text>
-                                                    </TouchableOpacity>
-                                                )}
-                                                keyExtractor={(item) => item}
-                                            />
-                                        </View>
-                                    </View>
-                                </Modal>
+                                <Text>Classification By Age/Health Risk Group: <Text style={styles.required}>*</Text> </Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={classificationByAgeHealth}
+                                    editable={false}
+                                />
                             </View>
-
                             <View style={styles.inputContainer}>
-                                {sex === 'Female' && (
+                                {sex === 'Female' && numericAge >= 15 && (
                                     <>
                                         <Text>Last Menstrual Period (LMP):</Text>
                                         <Text>If Pregnant, Write the LMP in this date format:</Text>
@@ -1234,7 +1498,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                                                 )}
 
                                                 <Text></Text>
-                                                <Text>Family Planning Status:</Text>
+                                                <Text>Family Planning Status (if applicable): <Text style={styles.required}>*</Text> </Text>
                                                 <TouchableOpacity
                                                     style={styles.dropdownButton}
                                                     onPress={() => setIsFamilyPlanningStatusDropdownOpen(!isFamilyPlanningStatusDropdownOpen)}>
@@ -1268,7 +1532,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 )}
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Type of Water Source:</Text>
+                                <Text>Type of Water Source: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
                                     style={styles.dropdownButton}
                                     onPress={() => setIsTypeOfWaterSourceDropdownOpen(!isTypeOfWaterSourceDropdownOpen)}>
@@ -1298,7 +1562,7 @@ const AddResidentRegister = ({ navigation, route }) => {
                                 </Modal>
                             </View>
                             <View style={styles.inputContainer}>
-                                <Text>Type of Toilet Facility:</Text>
+                                <Text>Type of Toilet Facility: <Text style={styles.required}>*</Text> </Text>
                                 <TouchableOpacity
                                     style={styles.dropdownButton}
                                     onPress={() => setIsTypeOfToiletFacilityDropdownOpen(!isTypeOfToiletFacilityDropdownOpen)}>
@@ -1329,7 +1593,32 @@ const AddResidentRegister = ({ navigation, route }) => {
                             </View>
                         </>
                     )}
-        
+
+                    <Modal
+                        transparent={true}
+                        visible={isSaveModalVisible}
+                        onRequestClose={() => setIsSaveModalVisible(false)}
+                    >
+                        <View style={styles.modalBackground2}>
+                            <View style={styles.modalContainer2}>
+                                <Text style={styles.modalText2}>Your request has been submitted successfully!</Text>
+                                <View style={styles.modalButtonContainer2}>
+                                    <TouchableOpacity
+                                        style={[styles.modalButton2, { backgroundColor: '#4CAF50' }]}
+                                        onPress={() => handleSaveConfirmation(true)}
+                                    >
+                                        <Text style={styles.modalButtonText2}>Proceed</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+
+                    {/* Error Message */}
+                    {showError && (
+                        <Text style={styles.errorText}>Please fill in all the required (*) information.</Text>
+                    )}
 
                     <Pagination
                         totalPages={totalPages}
@@ -1343,6 +1632,7 @@ const AddResidentRegister = ({ navigation, route }) => {
         </KeyboardAwareScrollView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {
@@ -1378,6 +1668,11 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginTop: 5,
+        color: 'black',
+    },
+    required: {
+    color: 'red',
+    fontSize: 16
     },
     choiceContainer: {
         flexDirection: 'row',
@@ -1428,7 +1723,101 @@ const styles = StyleSheet.create({
         marginTop: 20,
         alignSelf: 'center',
     },
+    errorText: {
+    color: 'red',
+    marginTop: 10,
+    marginBottom: 10,
+    fontWeight: 'Bold',
+    fontSize: 15,
+    textAlign: 'justify',
+    },
+    dropdownButton1: {
+        marginTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dropdownMenu1: {
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#000000',
+        borderRadius: 4,
+        marginTop: 5,
+        position: 'absolute',
+        zIndex: 1,
+    },
+    dropdownOption1: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+    },
+    dropdownIcon1: {
+        marginRight: 10,
+    },
+    dropdownText1: {
+        fontSize: 16,
+        color: '#000000',
+    },
+    modalContainer1: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    },
+    modalButton1: {
+        marginTop: 20,
+        backgroundColor: '#000000',
+        padding: 10,
+        borderRadius: 5,
+    },
+    modalButtonText1: {
+        color: '#ffffff',
+        fontSize: 18,
+    },
+    datePickerText: {
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+  },
+    modalBackground2: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer2: {
+        width: 300,
+        padding: 20,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    modalText2: {
+        fontSize: 18,
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    modalButtonContainer2: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    modalButton2: {
+        padding: 10,
+        borderRadius: 5,
+        flex: 1,
+        alignItems: 'center',
+        marginHorizontal: 5,
+    },
+    modalButtonText2: {
+        color: '#FFFFFF',
+        fontSize: 16,
+    },
+
 });
 
 
 export default AddResidentRegister;
+

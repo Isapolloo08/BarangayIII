@@ -1,48 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNPickerSelect from 'react-native-picker-select';
+import axios from 'axios';
 
 // Get screen width
 const { width } = Dimensions.get('window');
 
+const API_URL = 'http://lesterintheclouds.com'; // Update this to your CPanel server URL
+
 export default function Payroll() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());  // 0-based month
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [payrollData, setPayrollData] = useState([]);
 
-  // Sample data for the payroll table
-  const payrollData = [
-    { id: '1', name: 'John Doe', position: 'Kapitan', netPay: '$3000' },
-    { id: '2', name: 'Jane Smith', position: 'Kagawad', netPay: '$2500' },
-    { id: '3', name: 'Samuel Adams', position: 'Treasurer', netPay: '$2200' },
-    { id: '4', name: 'Sarah Johnson', position: 'Secretary', netPay: '$2000' },
-    { id: '5', name: 'Michael Brown', position: 'Kagawad', netPay: '$2300' },
-    { id: '6', name: 'Emily Davis', position: 'Member', netPay: '$1800' },
-    { id: '7', name: 'Chris Lee', position: 'Member', netPay: '$1900' },
-    { id: '8', name: 'Katie Wilson', position: 'Member', netPay: '$1700' },
-    { id: '9', name: 'Andrew Miller', position: 'Member', netPay: '$1600' },
-    { id: '10', name: 'Sophia Brown', position: 'Member', netPay: '$2100' },
-    { id: '11', name: 'Lucas Evans', position: 'Member', netPay: '$2500' },
-    { id: '12', name: 'Olivia Taylor', position: 'Member', netPay: '$2600' },
-    { id: '13', name: 'Ethan Anderson', position: 'Member', netPay: '$2700' },
-    { id: '14', name: 'Isabella Martinez', position: 'Member', netPay: '$2800' },
-    { id: '15', name: 'Liam Thomas', position: 'Member', netPay: '$2900' },
-    { id: '16', name: 'Mia Wilson', position: 'Member', netPay: '$3000' },
-    { id: '17', name: 'Noah Harris', position: 'Member', netPay: '$3100' },
-    { id: '18', name: 'Ava White', position: 'Member', netPay: '$3200' },
-    { id: '19', name: 'Jacob Martin', position: 'Member', netPay: '$3300' },
-    { id: '20', name: 'Sophia Thompson', position: 'Member', netPay: '$3400' },
-    { id: '21', name: 'Jackson Lee', position: 'Member', netPay: '$3500' },
-    { id: '22', name: 'Ava Harris', position: 'Member', netPay: '$3600' },
-    { id: '23', name: 'Liam Anderson', position: 'Member', netPay: '$3700' },
-    { id: '24', name: 'Olivia King', position: 'Member', netPay: '$3800' },
-    { id: '25', name: 'Mason Scott', position: 'Member', netPay: '$3900' },
-    { id: '26', name: 'Emma Davis', position: 'Member', netPay: '$4000' },
-    { id: '27', name: 'James Clark', position: 'Member', netPay: '$4100' },
-    { id: '28', name: 'Avery Adams', position: 'Member', netPay: '$4200' },
-    { id: '29', name: 'Ethan Lewis', position: 'Member', netPay: '$4300' },
-    { id: '30', name: 'Isabella Walker', position: 'Member', netPay: '$4400' },
-  ];
+  useEffect(() => {
+    fetchPayrollData();
+  }, [selectedMonth, selectedYear]);
+
+  const fetchPayrollData = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/getPayrollData.php`, {
+        params: {
+          month: selectedMonth + 1, // Adjust for 1-based month in query
+          year: selectedYear
+        }
+      });
+      setPayrollData(response.data);
+    } catch (error) {
+      console.error('Error fetching payroll data:', error);
+    }
+  };
+
+  const insertPayrollData = async (data) => {
+    try {
+      const response = await axios.post(`${API_URL}/insertPayrollData.php`, data);
+      if (response.data.status === 'success') {
+        console.log('Data inserted successfully');
+        // Optionally, you can refresh the data or give feedback to the user here
+      } else {
+        console.error('Failed to insert data:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error inserting data:', error);
+    }
+  };
 
   // Generate the months and years for the filters
   const months = [
@@ -102,7 +104,7 @@ export default function Payroll() {
                 <Text style={styles.cell}>{item.netPay}</Text>
               </View>
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
           />
         </View>
@@ -123,11 +125,6 @@ const styles = StyleSheet.create({
   filterContainer: {
     marginBottom: 20,
     alignItems: 'center',
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#710808',
   },
   filters: {
     width: '100%',

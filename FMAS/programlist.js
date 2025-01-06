@@ -1,8 +1,13 @@
 // app/programlist.jsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, Dimensions, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import RNPickerSelect from 'react-native-picker-select';
 
+// Get screen width
+const { width } = Dimensions.get('window');
+
+// Sample programs data
 const initialPrograms = [
   { id: 1, name: 'Health and Sanitation Program', budget: 1000 },
   { id: 2, name: 'Environmental Protection Program', budget: 2000 },
@@ -14,15 +19,26 @@ const initialPrograms = [
 export default function ProgramList({ navigation }) {
   const [programs, setPrograms] = useState(initialPrograms);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [programToDelete, setProgramToDelete] = useState(null);
+
+  const years = Array.from(new Array(20), (val, index) => {
+    const year = new Date().getFullYear() - index;
+    return { label: year.toString(), value: year };
+  });
 
   const handleDelete = (id) => {
-    Alert.alert('Delete Program', 'Are you sure you want to delete this program?', [
-      { text: 'Cancel' },
-      {
-        text: 'Delete',
-        onPress: () => setPrograms(programs.filter(program => program.id !== id)),
-      },
-    ]);
+    setProgramToDelete(id);
+    setIsModalVisible(true);
+  };
+
+  const confirmDelete = () => {
+    setPrograms(programs.filter(program => program.id !== programToDelete));
+    setIsModalVisible(false);
+  };
+
+  const cancelDelete = () => {
+    setIsModalVisible(false);
   };
 
   const addProgram = () => {
@@ -41,20 +57,20 @@ export default function ProgramList({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.yearFilter}>
-        <Text style={styles.yearFilterLabel}>Select Year:</Text>
-        <TextInput
-          style={styles.yearInput}
-          keyboardType="numeric"
-          value={String(selectedYear)}
-          onChangeText={(text) => setSelectedYear(Number(text))}
+      <View style={styles.yearPickerContainer}>
+        <Text style={styles.yearPickerLabel}>Select Year:</Text>
+        <RNPickerSelect
+          onValueChange={(value) => setSelectedYear(value)}
+          items={years}
+          value={selectedYear}
+          style={pickerSelectStyles}
         />
       </View>
       {programs.map((program) => (
         <View key={program.id} style={styles.card}>
           <View style={styles.cardContent}>
             <Text style={styles.programName}>{program.name}</Text>
-            <Text style={styles.programBudget}>Budget: ${program.budget}</Text>
+            <Text style={styles.programBudget}>Budget: ₱{program.budget}</Text>
           </View>
           <View style={styles.cardButtons}>
             <TouchableOpacity
@@ -79,8 +95,31 @@ export default function ProgramList({ navigation }) {
         </View>
       ))}
       <TouchableOpacity style={styles.addButton} onPress={addProgram}>
-        <Text style={styles.addButtonText}>Add Program</Text>
+        <Text style={styles.addButtonText}>Add Budget</Text>
       </TouchableOpacity>
+
+      {/* Custom Delete Confirmation Modal */}
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={cancelDelete}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Delete Program</Text>
+            <Text style={styles.modalMessage}>Are you sure you want to delete this program?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.modalButtonCancel} onPress={cancelDelete}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButtonConfirm} onPress={confirmDelete}>
+                <Text style={styles.modalButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -88,35 +127,35 @@ export default function ProgramList({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     backgroundColor: '#f0f0f0',
+    padding: 20,
   },
-  yearFilter: {
+  yearPickerContainer: {
+    width: '100%',
+    maxWidth: 340,
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
+    alignItems: 'center', 
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  yearFilterLabel: {
-    fontSize: 16,
-    color: '#710808',
-  },
-  yearInput: {
-    borderWidth: 1,
-    borderColor: '#710808',
-    borderRadius: 5,
-    padding: 8,
-    width: 100,
-    textAlign: 'center',
+  yearPickerLabel: {
     fontSize: 16,
     color: '#710808',
   },
   card: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: 15,
-    marginVertical: 10,
+    width: '100%',
+    maxWidth: 340,
+    padding: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -124,6 +163,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4,
+    alignItems: 'center',
+    marginTop: 20,
   },
   cardContent: {
     marginBottom: 10,
@@ -172,5 +213,89 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
+  },
+  modalContent: {
+    width: '80%',
+    maxWidth: 340,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#710808',
+    marginBottom: 10,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: '#710808',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButtonCancel: {
+    flex: 1,
+    marginHorizontal: 5,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#ccc', // Light gray background for cancel button
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalButtonConfirm: {
+    flex: 1,
+    marginHorizontal: 5,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#710808', // Main color for confirm button
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#710808',
+    borderRadius: 4,
+    color: '#710808',
+    paddingRight: 30,
+    width: '80%', // Adjust width to be more responsive
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#710808',
+    borderRadius: 4,
+    color: '#710808',
+    paddingRight: 30,
+    width: '80%', // Adjust width to be more responsive
   },
 });

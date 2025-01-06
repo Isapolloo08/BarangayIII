@@ -1,42 +1,42 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-// Create a context
+export const initialReportData = {
+  "Barangay Clearance": {
+    font: "Arial",
+    fontSize: 14,
+    fontStyle: "normal",
+    content: "This is the content of Barangay Clearance"
+  },
+  "Certificate of Indigency": {
+    font: "Times New Roman",
+    fontSize: 16,
+    fontStyle: "italic",
+    content: "This is the content of Certificate of Indigency"
+  },
+  "Barangay ID": {
+    font: "Courier New",
+    fontSize: 18,
+    fontStyle: "bold",
+    content: "This is the content of Barangay ID"
+  },
+  "Business Permit": {
+    font: "Arial",
+    fontSize: 14,
+    fontStyle: "normal",
+    content: "This is the content of Business Permit"
+  },
+  "Barangay Certificate": {
+    font: "Times New Roman",
+    fontSize: 16,
+    fontStyle: "italic",
+    content: "This is the content of Barangay Certificate"
+  }
+};
+
 const ReportContext = createContext();
 
-// Create a provider component
 export const ReportProvider = ({ children }) => {
-  const [reportData, setReportData] = useState({
-    "Barangay Clearance": {
-      font: 'Arial',
-      fontSize: 14,
-      fontStyle: 'normal',
-      content: 'Resident Name: Juan Dela Cruz\nAddress: 123 Barangay St.\nIssued On: July 1, 2024'
-    },
-    "Certificate of Indigency": {
-      font: 'Arial',
-      fontSize: 14,
-      fontStyle: 'normal',
-      content: 'Resident Name: Maria Clara\nAddress: 456 Barangay Ave.\nIndigency Status: Verified\nIssued On: July 1, 2024'
-    },
-    "Barangay ID": {
-      font: 'Arial',
-      fontSize: 14,
-      fontStyle: 'normal',
-      content: 'Resident Name: Jose Rizal\nID Number: 78910\nAddress: 789 Barangay Blvd.\nIssued On: July 1, 2024'
-    },
-    "Business Permit": {
-      font: 'Arial',
-      fontSize: 14,
-      fontStyle: 'normal',
-      content: 'Business Name: Sari-Sari Store\nOwner: Andres Bonifacio\nAddress: 101 Barangay Corner\nPermit Validity: July 1, 2024 - June 30, 2025'
-    },
-    "Barangay Certificate": {
-      font: 'Arial',
-      fontSize: 14,
-      fontStyle: 'normal',
-      content: 'Resident Name: Emilio Aguinaldo\nCertificate Type: Residency\nAddress: 202 Barangay Drive\nIssued On: July 1, 2024'
-    }
-  });
+  const [reportData, setReportData] = useState(initialReportData);
 
   return (
     <ReportContext.Provider value={{ reportData, setReportData }}>
@@ -45,5 +45,4 @@ export const ReportProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the report context
 export const useReportContext = () => useContext(ReportContext);

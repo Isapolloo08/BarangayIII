@@ -7,6 +7,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange, onSave }) => {
     pages.push(i);
   }
 
+  
+
 
   return (
     <View style={styles.paginationContainer}>
